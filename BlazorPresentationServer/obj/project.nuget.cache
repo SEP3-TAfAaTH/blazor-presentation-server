@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "bRX+7YqohiPwguZbb8uWqkdtw1Dw7dWIbPg7PtCYBF1gfjgOV2rAbR/eiii0Z3EjNwizo6Brml1WsA+qnT3FqA==",
+  "dgSpecHash": "KfG99zdiKR6uhJE1B47Xmb38Pn19NAXZEW7aIw25iWVHiMVnotFCy8n996TE5Eh0JMgY01lObfDHtblUv9dWag==",
   "success": true,
-  "projectFilePath": "C:\\Users\\lucas\\Documents\\RiderProjects\\SEP3\\BlazorPresentationServer\\BlazorPresentationServer\\BlazorPresentationServer.csproj",
+  "projectFilePath": "C:\\Users\\micha\\RiderProjects\\blazor-presentation-server\\BlazorPresentationServer\\BlazorPresentationServer.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
