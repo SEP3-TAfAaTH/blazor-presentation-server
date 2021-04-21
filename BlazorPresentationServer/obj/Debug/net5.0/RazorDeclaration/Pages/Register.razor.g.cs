@@ -13,91 +13,84 @@ namespace BlazorPresentationServer.Pages
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 #nullable restore
-#line 1 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 1 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\_Imports.razor"
 using System.Net.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 2 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 3 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 4 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Forms;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 5 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Routing;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 6 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 7 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 8 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 8 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 9 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\_Imports.razor"
 using BlazorPresentationServer;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 10 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\_Imports.razor"
 using BlazorPresentationServer.Shared;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\Pages\Register.razor"
+#line 2 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\Pages\Register.razor"
 using BlazorPresentationServer.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\Pages\Register.razor"
-using BlazorPresentationServer.Data;
-
-#line default
-#line hidden
-#nullable disable
-#nullable restore
-#line 4 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\Pages\Register.razor"
+#line 4 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\Pages\Register.razor"
 using System.ComponentModel.DataAnnotations;
 
 #line default
@@ -112,60 +105,23 @@ using System.ComponentModel.DataAnnotations;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 50 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\Pages\Register.razor"
+#line 39 "C:\Users\lucas\Documents\RiderProjects\SEP3\BlazorPresentationServer\BlazorPresentationServer\Pages\Register.razor"
        
-    private AddAccount model = new AddAccount();
+    private Account newAccount = new Account();
     private bool loading;
     
     
-    private string username;
-    private string password;
-    private string confpassword;
     private string errorMessage;
 
     
     private async void OnValidSubmit()
     {
-        PerformRegister();
+        //AccountData.RegisterAccount(newAccount);
         
-    // reset alerts on submit
-        model.Username = "";
-        model.Password = "";
-        
-        loading = true;
-        
-        /*try
-        {
-            await AccountService.Register(model);
-            AlertService.Success("Registration successful", keepAfterRouteChange: true);
-            NavigationManager.NavigateTo("account/login");
-        }
-        catch (Exception ex)
-        {
-            AlertService.Error(ex.Message);
-            loading = false;
-            StateHasChanged();
-        }*/
+    
     }
     
-    private void PerformRegister()
-    {
-        IAccountData accountJson = new AccountJSON();
-        errorMessage = "";
-        try
-        {
-            if (password.Equals(confpassword))
-            {
-                accountJson.RegisterAccount(username,password);
-                NavigationManager.NavigateTo("/Login");
-            }
-           
-        }
-        catch (Exception e)
-        {
-            errorMessage = e.Message;
-        }
-    }
+    
 
 
 #line default
