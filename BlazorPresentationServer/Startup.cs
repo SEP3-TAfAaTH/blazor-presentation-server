@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BlazorPresentationServer.Services;
 
+
 namespace BlazorPresentationServer
 {
     public class Startup
@@ -28,7 +29,6 @@ namespace BlazorPresentationServer
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-
             services.AddHttpClient<IFileAdapter, FileAdapter>(client =>
             {
                 client.BaseAddress = new Uri("https://localhost:8080");
