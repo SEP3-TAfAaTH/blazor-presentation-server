@@ -199,3 +199,12 @@ FodyWeavers.xsd
 !.vscode/extensions.json
 *.code-workspace
 .history/
+
+*/bin/*
+*/obj/*
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+*.dll
+*/Blazor/obj/*
+.idea/*
