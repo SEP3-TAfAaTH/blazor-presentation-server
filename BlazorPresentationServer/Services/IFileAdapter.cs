@@ -6,10 +6,10 @@ namespace BlazorPresentationServer.Services
 {
     public interface IFileAdapter
     {
-        Task<List<Account>> GetAccountsAsync();
         Task AddAccountAsync(Account account);
-        Task<Account> GetAccountAsync(int id);
-        Task RemoveAccountAsync(int id);
-        Task UpdateAccountAsync(Account account);
+        
+        Task<List<Account>> GetAccountsAsync();
+        Task<Account> GetAccountAsyncById(int id);
+        
     }
 }

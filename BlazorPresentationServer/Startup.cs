@@ -31,7 +31,7 @@ namespace BlazorPresentationServer
             services.AddServerSideBlazor();
             services.AddHttpClient<IFileAdapter, FileAdapter>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:8080");
+                client.BaseAddress = new Uri("http://localhost:8080");
             });
         }
 

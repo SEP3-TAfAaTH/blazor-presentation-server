@@ -1,8 +1,10 @@
 ﻿@page "/Register"
-@using BlazorPresentationServer.Models
+@using BlazorPresentationServer.Model
 
 @using System.ComponentModel.DataAnnotations
+@using BlazorPresentationServer.Services
 @inject NavigationManager NavigationManager
+@inject IFileAdapter FileAdapter
 
 
 <h3>Register</h3>
@@ -46,9 +48,16 @@
     
     private async void OnValidSubmit()
     {
-        //AccountData.RegisterAccount(newAccount);
-        
-    
+        try
+        {
+            await FileAdapter.AddAccountAsync(newAccount);
+            Console.WriteLine($"on valid submit + {newAccount.Username}, {newAccount.Password}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
     
     
