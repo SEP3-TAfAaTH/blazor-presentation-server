@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KfG99zdiKR6uhJE1B47Xmb38Pn19NAXZEW7aIw25iWVHiMVnotFCy8n996TE5Eh0JMgY01lObfDHtblUv9dWag==",
+  "dgSpecHash": "CqFstnwDU0W2bh15VTy9ihKx58zLE7PBcKq+BgqmWpv/Tf+ayXK9OY+GvPNiQQKbC166RhfeGsBSvOzKNwaDMw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\micha\\RiderProjects\\blazor-presentation-server\\BlazorPresentationServer\\BlazorPresentationServer.csproj",
+  "projectFilePath": "D:\\Egyetem\\Semester3\\DNP1\\RiderProjects\\blazor-presentation-server\\BlazorPresentationServer\\BlazorPresentationServer.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

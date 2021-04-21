@@ -13,70 +13,70 @@ namespace BlazorPresentationServer.Pages
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 #nullable restore
-#line 1 "C:\Users\micha\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 1 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
 using System.Net.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "C:\Users\micha\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 2 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\micha\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 3 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\micha\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 4 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Forms;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\micha\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 5 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Routing;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "C:\Users\micha\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 6 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "C:\Users\micha\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 7 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 8 "C:\Users\micha\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 8 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "C:\Users\micha\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 9 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
 using BlazorPresentationServer;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "C:\Users\micha\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
+#line 10 "D:\Egyetem\Semester3\DNP1\RiderProjects\blazor-presentation-server\BlazorPresentationServer\_Imports.razor"
 using BlazorPresentationServer.Shared;
 
 #line default

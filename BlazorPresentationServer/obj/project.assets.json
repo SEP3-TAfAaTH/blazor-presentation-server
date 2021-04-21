@@ -8,19 +8,19 @@
     "net5.0": []
   },
   "packageFolders": {
-    "C:\\Users\\micha\\.nuget\\packages\\": {}
+    "C:\\Users\\peter\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\micha\\RiderProjects\\blazor-presentation-server\\BlazorPresentationServer\\BlazorPresentationServer.csproj",
+      "projectUniqueName": "D:\\Egyetem\\Semester3\\DNP1\\RiderProjects\\blazor-presentation-server\\BlazorPresentationServer\\BlazorPresentationServer.csproj",
       "projectName": "BlazorPresentationServer",
-      "projectPath": "C:\\Users\\micha\\RiderProjects\\blazor-presentation-server\\BlazorPresentationServer\\BlazorPresentationServer.csproj",
-      "packagesPath": "C:\\Users\\micha\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\micha\\RiderProjects\\blazor-presentation-server\\BlazorPresentationServer\\obj\\",
+      "projectPath": "D:\\Egyetem\\Semester3\\DNP1\\RiderProjects\\blazor-presentation-server\\BlazorPresentationServer\\BlazorPresentationServer.csproj",
+      "packagesPath": "C:\\Users\\peter\\.nuget\\packages\\",
+      "outputPath": "D:\\Egyetem\\Semester3\\DNP1\\RiderProjects\\blazor-presentation-server\\BlazorPresentationServer\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\micha\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\peter\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
@@ -61,7 +61,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.104\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
       }
     }
   }
