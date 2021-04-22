@@ -9,7 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using BlazorPresentationServer.Data;
+using BlazorPresentationServer.Services;
+
 
 namespace BlazorPresentationServer
 {
@@ -28,7 +29,10 @@ namespace BlazorPresentationServer
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+            services.AddHttpClient<IAccountService, AccountService>(client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:8080");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

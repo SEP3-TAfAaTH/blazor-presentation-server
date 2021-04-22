@@ -1,0 +1,63 @@
+﻿@page "/Register"
+
+@using BlazorPresentationServer.Model
+@using System.ComponentModel.DataAnnotations
+@using BlazorPresentationServer.Services
+
+@inject NavigationManager NavigationManager
+@inject IAccountService _accountService
+
+
+
+
+<div class="card">
+    <h4 class="card-header">Register</h4>
+    <div class="card-body">
+        <EditForm Model="@newAccount" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label>Username</label>
+                <InputText @bind-Value="newAccount.Username" class="form-control" />
+                <ValidationMessage For="@(() => newAccount.Username)" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <InputText @bind-Value="newAccount.Password" class="form-control" />
+                <ValidationMessage For="@(() => newAccount.Password)" />
+            </div>
+            
+            
+            
+            <button disabled="@loading" class="btn btn-primary">
+                @if (loading) 
+                {
+                    <span class="spinner-border spinner-border-sm mr-1"></span>
+                }
+                Register
+            </button>
+            <NavLink href="#" class="btn btn-link">Cancel</NavLink>
+            
+            
+        </EditForm>
+    </div>
+</div>
+@code {
+    private Account newAccount = new Account();
+    private bool loading;
+
+    private async void OnValidSubmit()
+    {
+        try
+        {
+            await _accountService.AddAccountAsync(newAccount);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            throw;
+        }
+    }
+    
+    
+
+}
