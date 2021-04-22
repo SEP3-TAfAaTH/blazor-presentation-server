@@ -4,7 +4,7 @@ using BlazorPresentationServer.Model;
 
 namespace BlazorPresentationServer.Services
 {
-    public interface IUserService
+    public interface IAccountService
     {
         Task AddAccountAsync(Account account);
         

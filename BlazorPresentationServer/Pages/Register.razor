@@ -1,15 +1,13 @@
 ﻿@page "/Register"
-@using BlazorPresentationServer.Model
 
+@using BlazorPresentationServer.Model
 @using System.ComponentModel.DataAnnotations
 @using BlazorPresentationServer.Services
+
 @inject NavigationManager NavigationManager
-@inject IUserService userService
+@inject IAccountService _accountService
 
 
-<h3>Register</h3>
-
-<label>This is the register page</label>
 
 
 <div class="card">
@@ -28,6 +26,8 @@
                 <ValidationMessage For="@(() => newAccount.Password)" />
             </div>
             
+            
+            
             <button disabled="@loading" class="btn btn-primary">
                 @if (loading) 
                 {
@@ -35,22 +35,21 @@
                 }
                 Register
             </button>
-            <NavLink href="account/login" class="btn btn-link">Cancel</NavLink>
+            <NavLink href="#" class="btn btn-link">Cancel</NavLink>
+            
+            
         </EditForm>
     </div>
 </div>
 @code {
     private Account newAccount = new Account();
     private bool loading;
-    private string errorMessage;
-    
+
     private async void OnValidSubmit()
     {
-        errorMessage = "";
         try
         {
-            await userService.AddAccountAsync(newAccount);
-            Console.WriteLine($"on valid submit + {newAccount.Username}, {newAccount.Password}");
+            await _accountService.AddAccountAsync(newAccount);
         }
         catch (Exception e)
         {
