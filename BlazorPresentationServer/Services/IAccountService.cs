@@ -4,7 +4,7 @@ using BlazorPresentationServer.Model;
 
 namespace BlazorPresentationServer.Services
 {
-    public interface IFileAdapter
+    public interface IUserService
     {
         Task AddAccountAsync(Account account);
         

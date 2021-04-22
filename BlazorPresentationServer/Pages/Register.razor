@@ -4,10 +4,11 @@
 @using System.ComponentModel.DataAnnotations
 @using BlazorPresentationServer.Services
 @inject NavigationManager NavigationManager
-@inject IFileAdapter FileAdapter
+@inject IUserService userService
 
 
 <h3>Register</h3>
+
 <label>This is the register page</label>
 
 
@@ -41,21 +42,19 @@
 @code {
     private Account newAccount = new Account();
     private bool loading;
-    
-    
     private string errorMessage;
-
     
     private async void OnValidSubmit()
     {
+        errorMessage = "";
         try
         {
-            await FileAdapter.AddAccountAsync(newAccount);
+            await userService.AddAccountAsync(newAccount);
             Console.WriteLine($"on valid submit + {newAccount.Username}, {newAccount.Password}");
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Console.WriteLine(e.Message);
             throw;
         }
     }

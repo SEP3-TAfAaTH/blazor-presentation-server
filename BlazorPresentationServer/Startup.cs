@@ -29,7 +29,7 @@ namespace BlazorPresentationServer
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddHttpClient<IFileAdapter, FileAdapter>(client =>
+            services.AddHttpClient<IUserService, UserService>(client =>
             {
                 client.BaseAddress = new Uri("http://localhost:8080");
             });
