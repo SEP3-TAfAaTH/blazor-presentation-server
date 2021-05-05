@@ -26,8 +26,6 @@
                 <ValidationMessage For="@(() => newAccount.Password)" />
             </div>
             
-            
-            
             <button disabled="@loading" class="btn btn-primary">
                 @if (loading) 
                 {
@@ -36,13 +34,13 @@
                 Register
             </button>
             <NavLink href="#" class="btn btn-link">Cancel</NavLink>
-            
-            
         </EditForm>
+        @errorMessage
     </div>
 </div>
 @code {
     private Account newAccount = new Account();
+    private string errorMessage;
     private bool loading;
 
     private async Task OnValidSubmit()
@@ -53,11 +51,8 @@
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            throw;
+            Console.WriteLine("Register: "+e.Message);
+            errorMessage = e.Message;
         }
     }
-    
-    
-
 }
