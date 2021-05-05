@@ -33,6 +33,10 @@ namespace BlazorPresentationServer
             {
                 client.BaseAddress = new Uri("http://localhost:8080");
             });
+            services.AddHttpClient<ILoginAccountService, LoginAccountService>(client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:8080");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

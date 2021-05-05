@@ -1,11 +1,9 @@
 @page "/Login"
 @using BlazorPresentationServer.Model
-
 @using BlazorPresentationServer.Services
+
 @inject NavigationManager NavigationManager
-@inject IAccountService _accountService
-
-
+@inject ILoginAccountService _loginAccountService
 
 
 <div class="card">
@@ -34,7 +32,7 @@
                 Login
             </button>
             <NavLink href="Register" class="btn btn-link">Are you new? Register here</NavLink>
-            <label> @errorMessage</label>
+            <label> @errorMessage </label>
             
         </EditForm>
     </div>
@@ -46,17 +44,17 @@
     private bool loading;
     private String errorMessage;
 
-    private async void OnValidSubmit()
+    private async Task OnValidSubmit()
     {
         try
         {
-            await _accountService.AddAccountAsync(validAccount);
+            await _loginAccountService.LoginAccountAsync(validAccount);
+            NavigationManager.NavigateTo("/");
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
             errorMessage = e.Message;
-            throw;
         }
     }
 }
