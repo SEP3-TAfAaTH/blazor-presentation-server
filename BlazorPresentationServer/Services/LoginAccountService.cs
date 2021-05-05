@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -17,12 +18,22 @@ namespace BlazorPresentationServer.Services
         
         public async Task LoginAccountAsync(Account account)
         {
-            var accountJson = new StringContent(
-                JsonSerializer.Serialize(account, typeof(Account), new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json");
+            try
+            {
+                HttpResponseMessage response =
+                    await client.GetAsync($"/login?username={account.Username}&password={account.Password}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"{response.StatusCode}, {response.Content.ReadAsStringAsync().Result}"); //returns exception but not custom errormessage
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
-            using var httpResponse = await client.PostAsync("/login", accountJson);
-
-            httpResponse.EnsureSuccessStatusCode();
+            
         }
     }
 }
