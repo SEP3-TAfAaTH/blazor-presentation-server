@@ -23,8 +23,10 @@ namespace BlazorPresentationServer.Services
                 JsonSerializer.Serialize(account, typeof(Account), new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json");
 
             using var httpResponse = await client.PostAsync("/account", accountJson);
-
-            httpResponse.EnsureSuccessStatusCode();
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
+            }
         }
 
         
