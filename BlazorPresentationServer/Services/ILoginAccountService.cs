@@ -6,5 +6,6 @@ namespace BlazorPresentationServer.Services
     public interface ILoginAccountService
     {
         Task LoginAccountAsync(Account account);
+        Account GetLoggedInAccount();
     }
 }

@@ -1,9 +1,11 @@
 @page "/EditAccount"
 @using BlazorPresentationServer.Model
 @using BlazorPresentationServer.Services
+@using System.Runtime.CompilerServices
 
 @inject NavigationManager NavigationManager
-@inject IAccountService _accountService
+@inject IAccountService AccountService
+@inject ILoginAccountService LoginAccountService
 
 <div class="card">
     <h4 class="card-header">Edit Account</h4>
@@ -38,16 +40,22 @@
 </div>
 
 @code {
-    private Account changedAccount = new Account();
+    private Account changedAccount;
     
-    
+
     private bool loading;
+    
+
+    protected override void OnInitialized()
+    {
+        changedAccount = LoginAccountService.GetLoggedInAccount();
+    }
 
     private async void OnValidSubmit()
     {
         try
         {
-            await _accountService.AddAccountAsync(changedAccount);
+            await AccountService.AddAccountAsync(changedAccount);
         }
         catch (Exception e)
         {
@@ -55,4 +63,6 @@
             throw;
         }
     }
+    
+    
 }

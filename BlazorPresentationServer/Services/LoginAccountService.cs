@@ -10,6 +10,7 @@ namespace BlazorPresentationServer.Services
     public class LoginAccountService : ILoginAccountService
     {
         private readonly HttpClient client;
+        public Account loggedInAccount { get; set; }
 
         public LoginAccountService (HttpClient client)
         {
@@ -26,6 +27,8 @@ namespace BlazorPresentationServer.Services
                 {
                     throw new Exception($"{response.StatusCode}, {response.Content.ReadAsStringAsync().Result}"); //returns exception but not custom errormessage
                 }
+
+                loggedInAccount = account;
             }
             catch (Exception e)
             {
@@ -34,6 +37,11 @@ namespace BlazorPresentationServer.Services
             }
 
             
+        }
+
+        public Account GetLoggedInAccount()
+        {
+            return loggedInAccount;
         }
     }
 }
