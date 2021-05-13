@@ -3,7 +3,9 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using BlazorPresentationServer.Authentication;
 using BlazorPresentationServer.Model;
+
 
 namespace BlazorPresentationServer.Services
 {
@@ -11,9 +13,12 @@ namespace BlazorPresentationServer.Services
     {
         private readonly HttpClient client;
 
-        public LoginAccountService (HttpClient client)
+        private ICachedAccount CachedAccount;
+        
+        public LoginAccountService (HttpClient client, ICachedAccount cachedAccount)
         {
             this.client = client;
+            CachedAccount = cachedAccount;
         }
         
         public async Task LoginAccountAsync(Account account)
@@ -26,14 +31,20 @@ namespace BlazorPresentationServer.Services
                 {
                     throw new Exception($"{response.StatusCode}, {response.Content.ReadAsStringAsync().Result}"); //returns exception but not custom errormessage
                 }
+
+                string responseContent = await response.Content.ReadAsStringAsync();
+                
+                Account acc = JsonSerializer.Deserialize<Account>(responseContent, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+                CachedAccount.SetCachedAccount(acc);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-
-            
         }
     }
 }
