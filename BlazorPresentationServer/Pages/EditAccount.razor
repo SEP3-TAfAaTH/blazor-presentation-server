@@ -37,6 +37,7 @@ else
                     }
                     Save
                 </button>
+                <label>@errorMessage</label>
             </EditForm>
         </div>
     </div>
@@ -47,6 +48,8 @@ else
         Username = "username",
         Password = "password"
     };
+
+    private string errorMessage = "";
 
     private bool loading;
 
@@ -62,11 +65,12 @@ else
         {
             await _accountService.EditAccountAsync(changedAccount);
             CachedAccount.SetCachedAccount(changedAccount);
+            errorMessage = "";
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            throw;
+            errorMessage = e.Message;
         }
     }
 
