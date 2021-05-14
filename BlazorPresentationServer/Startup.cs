@@ -38,6 +38,7 @@ namespace BlazorPresentationServer
             {
                 client.BaseAddress = new Uri("http://localhost:8080");
             });
+            services.AddScoped<IAvailableStockService, AvailableStockService>();
             services.AddSingleton<ICachedAccount, CachedAccount>();
         }
 
