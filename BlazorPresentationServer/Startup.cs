@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlazorPresentationServer.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,12 @@ namespace BlazorPresentationServer
             {
                 client.BaseAddress = new Uri("http://localhost:8080");
             });
+            services.AddHttpClient<ILoginAccountService, LoginAccountService>(client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:8080");
+            });
+            services.AddScoped<IAvailableStockService, AvailableStockService>();
+            services.AddSingleton<ICachedAccount, CachedAccount>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

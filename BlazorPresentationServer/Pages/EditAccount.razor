@@ -1,0 +1,77 @@
+@page "/EditAccount"
+@using BlazorPresentationServer.Model
+@using BlazorPresentationServer.Services
+@using BlazorPresentationServer.Authentication
+
+@inject NavigationManager NavigationManager
+@inject IAccountService _accountService
+@inject ICachedAccount CachedAccount
+
+
+@if (changedAccount == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="card">
+        <h4 class="card-header">Edit Account</h4>
+        <div class="card-body">
+            <EditForm Model="@changedAccount" OnValidSubmit="@OnValidSubmit">
+                <DataAnnotationsValidator/>
+                <div class="form-group">
+                    <label>Username</label>
+                    <InputText @bind-Value="changedAccount.Username" class="form-control"/>
+                    <ValidationMessage For="@(() => changedAccount.Username)"/>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <InputText @bind-Value="changedAccount.Password" class="form-control"/>
+                    <ValidationMessage For="@(() => changedAccount.Password)"/>
+                </div>
+
+                <button disabled="@loading" class="btn btn-primary">
+                    @if (loading)
+                    {
+                        <span class="spinner-border spinner-border-sm mr-1"></span>
+                    }
+                    Save
+                </button>
+                <label>@errorMessage</label>
+            </EditForm>
+        </div>
+    </div>
+}
+@code {
+    private Account changedAccount = new Account
+    {
+        Username = "username",
+        Password = "password"
+    };
+
+    private string errorMessage = "";
+
+    private bool loading;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        changedAccount = CachedAccount.GetCachedAccount();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            await _accountService.EditAccountAsync(changedAccount);
+            CachedAccount.SetCachedAccount(changedAccount);
+            errorMessage = "";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            errorMessage = e.Message;
+        }
+    }
+
+}

@@ -23,11 +23,25 @@ namespace BlazorPresentationServer.Services
                 JsonSerializer.Serialize(account, typeof(Account), new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json");
 
             using var httpResponse = await client.PostAsync("/account", accountJson);
-
-            httpResponse.EnsureSuccessStatusCode();
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
+            }
         }
 
-        
+        public async Task EditAccountAsync(Account account)
+        {
+            var accountJson = new StringContent(
+                JsonSerializer.Serialize(account, typeof(Account), new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json");
+
+            using var httpResponse = await client.PutAsync("/account", accountJson);
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
+            }
+        }
+
+
         public async Task<List<Account>> GetAccountsAsync()
         {
             Task<string> stringAsync = client.GetStringAsync("/account");

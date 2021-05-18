@@ -1,0 +1,261 @@
+@page "/AvailableStocks"
+@using Radzen
+@using Radzen.Blazor
+@using System.Globalization
+@using BlazorPresentationServer.Model
+@inject Services.IAvailableStockService AvailableStockService
+
+<div class="card">
+    <h4 class="card-header" style="background-color: #415A77; color: white ">Available Stocks</h4>
+    <div class="card-body">
+        <label>
+                Filter By Name: 
+                <input  />
+            </label>
+        
+        <div class="card">
+            <h4 class="card-header" style="background-color: #CDCDCD ">Tesla</h4>
+            <div class="card-body" style="background-color: #94BFBE">
+                <label>Price</label> <text style="font-size: 14px" >@stockPrice</text> <br>
+                
+                <label>Percentage increase (every minute)</label> <text style="font-size: 14px" >@pIncrease</text> <br>
+                <button class="btn btn-success" style="margin-bottom: 10px" @onclick="UpdateData">Buy</button>
+                
+                <RadzenAccordion Multiple="true" >
+                    <Items>
+                        <RadzenAccordionItem Text="More Details" class="btn btn-link">
+                            Details for Orders <br/>
+                            <label>Daily high</label> <text  style="font-size: 14px">@dailyHigh</text> <br>
+                            
+                            <label>Daily low</label> <text  style="font-size: 14px" > @dailyLow</text> <br>
+                            <label>Previous close</label> <text  style="font-size: 14px" > @previousClose</text> <br>
+                            <label>Average in past x period</label> <text  style="font-size: 14px" > @avgInPast</text> <br>
+                            <label>Highest and lowest price of the year</label> <text  style="font-size: 14px" > @highLowPrice</text> <br>
+                            
+                            
+                            <h1>Radzen Blazor Chart with line series</h1>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12 p-4">
+                                        <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label>
+                                        <RadzenChart>
+                                            <RadzenLineSeries Smooth="@smooth" Data="@revenue2019" CategoryProperty="Date" Title="2019" LineType="LineType.Dashed" ValueProperty="Revenue">
+                                                <RadzenMarkers MarkerType="MarkerType.Square" />
+                                            </RadzenLineSeries>
+                                            <RadzenLineSeries Smooth="@smooth" Data="@revenue2020" CategoryProperty="Date" Title="2020" ValueProperty="Revenue">
+                                                <RadzenMarkers MarkerType="MarkerType.Circle" />
+                                            </RadzenLineSeries>
+                                            <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}" />
+                                            <RadzenValueAxis Formatter="@FormatAsUSD">
+                                                <RadzenGridLines Visible="true" />
+                                                <RadzenAxisTitle Text="Revenue in USD" />
+                                            </RadzenValueAxis>
+                                        </RadzenChart>
+                                    </div>
+                                </div>
+                        </RadzenAccordionItem>
+                        
+                    </Items>
+                </RadzenAccordion>
+                
+                
+            </div>
+
+        </div>
+        <div class="card" style=" margin-top: 30px; background-color: #CDCDCD ">
+            <h4 class="card-header">Nvidia</h4>
+            <div class="card-body" style="background-color: #94BFBE">
+                <label>Price</label> <br>
+                <label>Graph</label>
+            </div>
+        </div>
+        <div class="card" style=" margin-top: 30px; background-color: #CDCDCD ">
+            <h4 class="card-header">Dacia</h4>
+            <div class="card-body" style="background-color: #415A77">
+                <label>Price</label> <br>
+                <label>Graph</label>
+            </div>
+
+        </div>
+        <div class="card" style=" margin-top: 30px">
+            <h4 class="card-header">Apple</h4>
+            <div class="card-body">
+                <label>Price</label> <br>
+                <label>Graph</label>
+            </div>
+        </div>
+        <div class="card" style=" margin-top: 30px">
+            <h4 class="card-header">LEGO</h4>
+            <div class="card-body">
+                <label>Price</label> <br>
+                <label>Graph</label>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+@code {
+    double stockPrice;
+    double pIncrease;
+    double dailyHigh;
+    double dailyLow;
+    double previousClose;
+    double avgInPast;
+    double highLowPrice;
+    
+    
+      bool smooth = false;
+    class DataItem
+    {
+        public DateTime Date { get; set; }
+        public double Revenue { get; set; }
+    }
+
+    string FormatAsUSD(object value)
+    {
+        return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
+    }
+    
+    private void UpdateData()
+    {
+        GeneralStock tempStock = AvailableStockService.GatherInformations().Result;
+        stockPrice = tempStock.Price;
+        pIncrease = tempStock.PIncrease;
+        dailyHigh = tempStock.DailyHigh;
+        dailyLow = tempStock.DailyLow;
+        previousClose = tempStock.PreviousClose;
+        avgInPast = tempStock.AvgInPast;
+        highLowPrice = tempStock.HighLowPrice;
+    }
+
+    DataItem[] revenue2019 = new DataItem[] {
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-01-01"),
+            Revenue = 234000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-02-01"),
+            Revenue = 269000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-03-01"),
+            Revenue = 233000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-04-01"),
+            Revenue = 244000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-05-01"),
+            Revenue = 214000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-06-01"),
+            Revenue = 253000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-07-01"),
+            Revenue = 274000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-08-01"),
+            Revenue = 284000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-09-01"),
+            Revenue = 273000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-10-01"),
+            Revenue = 282000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-11-01"),
+            Revenue = 289000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-12-01"),
+            Revenue = 294000
+        }
+    };
+
+    DataItem[] revenue2020 = new DataItem[] {
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-01-01"),
+            Revenue = 334000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-02-01"),
+            Revenue = 369000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-03-01"),
+            Revenue = 333000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-04-01"),
+            Revenue = 344000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-05-01"),
+            Revenue = 314000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-06-01"),
+            Revenue = 353000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-07-01"),
+            Revenue = 374000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-08-01"),
+            Revenue = 384000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-09-01"),
+            Revenue = 373000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-10-01"),
+            Revenue = 382000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-11-01"),
+            Revenue = 389000
+        },
+        new DataItem
+        {
+            Date = DateTime.Parse("2019-12-01"),
+            Revenue = 394000
+        }
+    };
+
+    
+
+}

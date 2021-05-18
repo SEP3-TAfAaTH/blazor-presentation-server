@@ -4,7 +4,7 @@ namespace BlazorPresentationServer.Model
 {
     public class Account
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         [Required]
         public string Username { get; set; }
         [Required]
