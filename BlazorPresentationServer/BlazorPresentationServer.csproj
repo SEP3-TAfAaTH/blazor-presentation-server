@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="Radzen.Blazor" Version="3.2.8" />
     </ItemGroup>
 
