@@ -3,7 +3,10 @@
 @using Radzen.Blazor
 @using System.Globalization
 @using BlazorPresentationServer.Model
+@using BlazorPresentationServer.Services
+@using Microsoft.AspNetCore.Components
 @inject Services.IAvailableStockService AvailableStockService
+@inject IStockService StockService
 
 <div class="card">
     <h4 class="card-header" style="background-color: #415A77; color: white ">Available Stocks</h4>
@@ -32,28 +35,30 @@
                             <label>Average in past x period</label> <text  style="font-size: 14px" > @avgInPast</text> <br>
                             <label>Highest and lowest price of the year</label> <text  style="font-size: 14px" > @highLowPrice</text> <br>
                             
-                            
                             <h1>Radzen Blazor Chart with line series</h1>
                                 <div class="row">
                                     <div class="col-md-6 col-sm-12 p-4">
                                         <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label>
                                         <RadzenChart>
-                                            <RadzenLineSeries Smooth="@smooth" Data="@revenue2019" CategoryProperty="Date" Title="2019" LineType="LineType.Dashed" ValueProperty="Revenue">
+                                            @* <RadzenLineSeries Smooth="@smooth" Data="@revenue2019" CategoryProperty="Date" Title="2019" LineType="LineType.Dashed" ValueProperty="Revenue"> *@
+                                            @*     <RadzenMarkers MarkerType="MarkerType.Square" /> *@
+                                            @* </RadzenLineSeries> *@
+                                            @* <RadzenLineSeries Smooth="@smooth" Data="@revenue2020" CategoryProperty="Date" Title="2020" ValueProperty="Revenue"> *@
+                                            @*     <RadzenMarkers MarkerType="MarkerType.Circle" /> *@
+                                            @* </RadzenLineSeries> *@
+                                            <RadzenLineSeries Smooth="@smooth" Data="@appleStock" CategoryProperty="DateTime" Title="Apple Inc" LineType="LineType.Dashed" ValueProperty="Close">
                                                 <RadzenMarkers MarkerType="MarkerType.Square" />
                                             </RadzenLineSeries>
-                                            <RadzenLineSeries Smooth="@smooth" Data="@revenue2020" CategoryProperty="Date" Title="2020" ValueProperty="Revenue">
-                                                <RadzenMarkers MarkerType="MarkerType.Circle" />
-                                            </RadzenLineSeries>
+                                            @* <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}" /> *@
                                             <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}" />
                                             <RadzenValueAxis Formatter="@FormatAsUSD">
                                                 <RadzenGridLines Visible="true" />
-                                                <RadzenAxisTitle Text="Revenue in USD" />
+                                                <RadzenAxisTitle Text="Close price in USD" />
                                             </RadzenValueAxis>
                                         </RadzenChart>
                                     </div>
                                 </div>
                         </RadzenAccordionItem>
-                        
                     </Items>
                 </RadzenAccordion>
                 
@@ -91,12 +96,11 @@
             </div>
 
         </div>
-
-
     </div>
 </div>
 
 @code {
+    Stock _stock = new Stock();
     double stockPrice;
     double pIncrease;
     double dailyHigh;
@@ -104,9 +108,23 @@
     double previousClose;
     double avgInPast;
     double highLowPrice;
+    Stock[] appleStock;
     
     
       bool smooth = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _stock = await StockService.GetStockAsync("AAPL");
+        dailyHigh = _stock.High;
+        dailyLow = _stock.Low;
+        previousClose = _stock.Close;
+        pIncrease = _stock.Percent_Change;
+
+        stockPrice = await StockService.GetStockPriceAsync("AAPL");
+        appleStock = await StockService.GetStockPriceListAsync("AAPL");
+    }
+    
     class DataItem
     {
         public DateTime Date { get; set; }
