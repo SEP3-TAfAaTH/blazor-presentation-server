@@ -1,7 +1,12 @@
 @page "/Portfolio"
 @using BlazorPresentationServer.Model
+@using BlazorPresentationServer.Authentication
+@using BlazorPresentationServer.Services
 @inject NavigationManager NavigationManager;
 @inject DialogService DialogService
+@inject ICachedAccount CachedAccount
+@inject ITransactionService TransactionService
+@inject IStockService StockService
 
 <div class="card">
     <h4 class="card-header">Portfolio</h4>
@@ -24,7 +29,16 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th></th><th>Name</th><th>Symbol</th> <th>Quantity</th> <th>Price</th> <th>TotalValue</th><th>TodaysChange</th><th>TotalGainLoss</th>
+                    <th>
+                    </th>
+                    @* <th>Name</th> *@
+                    <th>Symbol</th> 
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Purchase Price</th>
+                    <th>Total Value</th>
+                    @* <th>TodaysChange</th>*@
+                    <th>Total Gain Loss</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -34,13 +48,14 @@
                         <td>
                             <RadzenButton Text="More Details" Click=@(args => ShowInlineDialog(item)) />
                         </td>
-                        <td>@item.Name</td>
+                        @* <td>@item.Name</td> *@
                         <td>@item.Symbol</td>
                         <td>@item.Quantity</td>
-                        <td>@item.Price</td>
-                        <td>@item.TotalValue</td>
-                        <td>@item.TodaysChange</td>
-                        <td>@item.TotalGainLoss</td>
+                        <td>$@item.Price</td>
+                        <td>$@item.PurchasePrice</td>
+                        <td>$@item.GetTotalValue()</td>
+                        @* <td>@item.TodaysChange</td> *@
+                        <td>$@item.GetGainLoss()</td>
 
                     </tr>
                 }
@@ -53,35 +68,54 @@
 
 @code {
     private IList<OwnedStock> ownedStocks = new List<OwnedStock>();
-    private OwnedStock apple = new OwnedStock();
-    private OwnedStock banana = new OwnedStock();
-    private IList<string> transactions = new List<string>();
+    private List<Transaction> transactions;
     
     
     protected override async Task OnInitializedAsync()
     {
-        apple.Name = "Apple";
-        apple.Symbol = "APPL";
-        apple.Price = 12;
-        apple.Date = "11/11/11";
-        apple.TodaysChange = 123.45;
-        apple.TotalValue = 123.45;
-        apple.PurchasePrice = 123.45;
-        apple.TotalGainLoss = 213.21;
-        ownedStocks.Add(apple);
+        transactions = new List<Transaction>();
+        transactions = await TransactionService.GetAllTransactionsByAccountId(2);
         
-        banana.Name = "Banana";
-        banana.Symbol = "BNNA";
-        banana.Price = 124;
-        banana.Date = "11/11/112";
-        banana.TodaysChange = 12453.45;
-        banana.TotalValue = 653.45;
-        banana.PurchasePrice = 563.45;
-        banana.TotalGainLoss = 2563.21;
-        ownedStocks.Add(banana);
-        //ownedStocks.Remove(apple);
-        //ownedStocks.Remove(banana);
-
+        foreach (var t in transactions)
+        {
+            bool unique = true;
+            foreach (var owned in ownedStocks)
+            {
+                if (t.StockSymbol.Equals(owned.Symbol))
+                {
+                    unique = false;
+                    break;
+                }
+            }
+            if (unique)
+            {
+                double price = await StockService.GetStockPriceAsync(t.StockSymbol);
+                OwnedStock stock = new OwnedStock
+                {
+                    Symbol = t.StockSymbol,
+                    Quantity = t.Quantity,
+                    Price = price,
+                    PurchasePrice = (double) t.Price,
+                    TotalCost = (double) (t.Quantity * t.Price)
+                };
+                ownedStocks.Add(stock);
+            }
+            else
+            {
+                var stock = ownedStocks.First(s => s.Symbol.Equals(t.StockSymbol));
+                if (t.Buy)
+                {
+                    stock.Quantity += t.Quantity;
+                    stock.TotalCost += (double) (t.Quantity * t.Price);
+                    // stock.PurchasePrice += (double) t.Price * t.Quantity;
+                }
+                else
+                {
+                    stock.Quantity -= t.Quantity;
+                    stock.TotalCost -= (double) (t.Quantity * t.Price);
+                }
+            }
+        }
     }
 
     private void NavigateToAvailableStock()
@@ -115,29 +149,34 @@
             
             <div class="row">
                 <div class="col-md-12">
-                   
-                    Quantity: @stockItem.Quantity <br>
-                    Price: @stockItem.Price <br>
-                    Total Value: @stockItem.TotalValue <br>
-                    Todays Change: @stockItem.TodaysChange <br>
-                    Total Gain Loss: @stockItem.TotalGainLoss <br>
                     <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>Date</th><th>Quantity</th><th>Purchase Price</th><th>Total Price</th>
+                                        <th>Date</th>
+                                        <th>Symbol</th>
+                                        <th>Type</th>
+                                        <th>Quantity</th>
+                                        <th>Purchase Price</th>
+                                        <th>Total Price</th>
                                     </tr>
                                     </thead>
                     <tbody>
-                    @foreach (var transactionItem in transactions)
+                    @foreach (var transactionItem in transactions.Where(t => t.StockSymbol.Equals(stockItem.Symbol)))
                     {
                         <tr>
-                            <td>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            
-                    
+                            <td>@transactionItem.DateCreated</td>
+                            <td>@stockItem.Symbol</td>
+                            @if (transactionItem.Buy)
+                            {
+                                <td>Buy</td>
+                            }
+                            else
+                            {
+                                <td>Sell</td>
+                            }
+                            <td>@transactionItem.Quantity</td>
+                            <td>@transactionItem.Price</td>
+                            <td>@(transactionItem.Price*transactionItem.Quantity)</td>
                         </tr>
                     }
                     </tbody>

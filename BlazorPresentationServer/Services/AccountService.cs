@@ -63,6 +63,5 @@ namespace BlazorPresentationServer.Services
             });
             return account;
         }
-
     }
 }

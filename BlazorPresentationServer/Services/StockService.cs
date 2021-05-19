@@ -16,7 +16,7 @@ namespace BlazorPresentationServer.Services
 {
     public class StockService : IStockService
     { 
-        private const string ApiKey = "";
+        private const string ApiKey = "8b66c2d14f4643e7b19076c0de11b861";
         private HttpClient client;
 
         public StockService(HttpClient client)
@@ -39,6 +39,7 @@ namespace BlazorPresentationServer.Services
             string responseContent = await response.Content.ReadAsStringAsync();
             var jobject = JObject.Parse(responseContent);
             Stock stock = JsonConvert.DeserializeObject<Stock>(jobject.ToString());
+            stock.Price = await GetStockPriceAsync(symbol);
             return stock;
         }
 
