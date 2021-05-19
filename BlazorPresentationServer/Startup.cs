@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BlazorPresentationServer.Services;
+using Radzen;
 
 
 namespace BlazorPresentationServer
@@ -44,6 +45,7 @@ namespace BlazorPresentationServer
             });
             services.AddScoped<IAvailableStockService, AvailableStockService>();
             services.AddSingleton<ICachedAccount, CachedAccount>();
+            services.AddScoped<DialogService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
