@@ -1,0 +1,152 @@
+@page "/Portfolio"
+@using BlazorPresentationServer.Model
+@inject NavigationManager NavigationManager;
+@inject DialogService DialogService
+
+<div class="card">
+    <h4 class="card-header">Portfolio</h4>
+    <div class="card-body">
+        @if (ownedStocks == null)
+        {
+            <p>
+                <em>Loading...</em>
+            </p>
+        }
+        else if (!ownedStocks.Any())
+        {
+            <p>
+                <em>You do not have any stocks. Go buy some.</em>
+                <button class="btn btn-primary" @onclick="NavigateToAvailableStock"> Navigate to the Counter component </button>
+            </p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                <tr>
+                    <th></th><th>Name</th><th>Symbol</th> <th>Quantity</th> <th>Price</th> <th>TotalValue</th><th>TodaysChange</th><th>TotalGainLoss</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in ownedStocks)
+                {
+                    <tr>
+                        <td>
+                            <RadzenButton Text="More Details" Click=@(args => ShowInlineDialog(item)) />
+                        </td>
+                        <td>@item.Name</td>
+                        <td>@item.Symbol</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Price</td>
+                        <td>@item.TotalValue</td>
+                        <td>@item.TodaysChange</td>
+                        <td>@item.TotalGainLoss</td>
+
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+
+    </div>
+</div>
+
+@code {
+    private IList<OwnedStock> ownedStocks = new List<OwnedStock>();
+    private OwnedStock apple = new OwnedStock();
+    private OwnedStock banana = new OwnedStock();
+    private IList<string> transactions = new List<string>();
+    
+    
+    protected override async Task OnInitializedAsync()
+    {
+        apple.Name = "Apple";
+        apple.Symbol = "APPL";
+        apple.Price = 12;
+        apple.Date = "11/11/11";
+        apple.TodaysChange = 123.45;
+        apple.TotalValue = 123.45;
+        apple.PurchasePrice = 123.45;
+        apple.TotalGainLoss = 213.21;
+        ownedStocks.Add(apple);
+        
+        banana.Name = "Banana";
+        banana.Symbol = "BNNA";
+        banana.Price = 124;
+        banana.Date = "11/11/112";
+        banana.TodaysChange = 12453.45;
+        banana.TotalValue = 653.45;
+        banana.PurchasePrice = 563.45;
+        banana.TotalGainLoss = 2563.21;
+        ownedStocks.Add(banana);
+        //ownedStocks.Remove(apple);
+        //ownedStocks.Remove(banana);
+
+    }
+
+    private void NavigateToAvailableStock()
+    {
+        NavigationManager.NavigateTo("AvailableStocks");    }
+
+    
+    
+    int orderID = 10248;
+    bool orderOpened;
+
+    protected override void OnInitialized()
+    {
+        DialogService.OnOpen += Open;
+        DialogService.OnClose += Close;
+    }
+
+    void Open(string title, Type type, Dictionary<string, object> parameters, DialogOptions options)
+    {
+        Console.WriteLine("Dialog opened");
+        
+    }
+
+    void Close(dynamic result)
+    {
+        Console.WriteLine("Dialog closed");
+    }
+
+    async Task ShowInlineDialog(OwnedStock stockItem) => await DialogService.OpenAsync(stockItem.Name + " (" + stockItem.Symbol +")", ds =>
+        @<div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                   
+                    Quantity: @stockItem.Quantity <br>
+                    Price: @stockItem.Price <br>
+                    Total Value: @stockItem.TotalValue <br>
+                    Todays Change: @stockItem.TodaysChange <br>
+                    Total Gain Loss: @stockItem.TotalGainLoss <br>
+                    <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Date</th><th>Quantity</th><th>Purchase Price</th><th>Total Price</th>
+                                    </tr>
+                                    </thead>
+                    <tbody>
+                    @foreach (var transactionItem in transactions)
+                    {
+                        <tr>
+                            <td>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            
+                    
+                        </tr>
+                    }
+                    </tbody>
+                    </table>
+                    <RadzenButton Text="Ok" Click="() => ds.Close(true)" Style="margin-bottom: 10px; width: 150px"/>
+                    <RadzenButton Text="Cancel" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Secondary" Style="margin-bottom: 10px; width: 150px"/>
+                    <RadzenButton Text="Refresh" Click="(() => { orderID = 10249; ds.Refresh(); })" ButtonStyle="ButtonStyle.Info" Style="margin-bottom: 10px; width: 150px"/>
+
+                </div>
+            </div>
+        </div>);
+}
