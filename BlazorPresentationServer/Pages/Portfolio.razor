@@ -29,8 +29,8 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>
-                    </th>
+                    <th></th>
+                    <th></th>
                     @* <th>Name</th> *@
                     <th>Symbol</th> 
                     <th>Quantity</th>
@@ -47,6 +47,9 @@
                     <tr>
                         <td>
                             <RadzenButton Text="More Details" Click=@(args => ShowInlineDialog(item)) />
+                        </td>
+                        <td>
+                            <RadzenButton Text="Sell" Click=@(args => ShowSellPopUp(item)) />
                         </td>
                         @* <td>@item.Name</td> *@
                         <td>@item.Symbol</td>
@@ -69,15 +72,30 @@
 @code {
     private IList<OwnedStock> ownedStocks = new List<OwnedStock>();
     private List<Transaction> transactions;
+
+    Transaction newTransaction = new Transaction();
+    OwnedStock banana = new OwnedStock();
+    OwnedStock apple = new OwnedStock();
+    
     
     
     protected override async Task OnInitializedAsync()
     {
         transactions = new List<Transaction>();
-        transactions = await TransactionService.GetAllTransactionsByAccountId(CachedAccount.GetCachedAccount().Id);
+        //transactions = await TransactionService.GetAllTransactionsByAccountId(CachedAccount.GetCachedAccount().Id);
+        banana.Name = "Banana";
+        banana.Symbol = "BNNA";
+        banana.Price = 1;
+        ownedStocks.Add(banana);
         
+        apple.Name = "Apple";
+        apple.Symbol = "APPL";
+        apple.Price = 2;
+        ownedStocks.Add(apple);
         foreach (var t in transactions)
         {
+           
+            
             bool unique = true;
             foreach (var owned in ownedStocks)
             {
@@ -114,6 +132,7 @@
                     stock.TotalCost -= (double) (t.Quantity * t.Price);
                 }
             }
+            
         }
     }
 
@@ -187,4 +206,47 @@
                 </div>
             </div>
         </div>);
+    
+    
+    async Task ShowSellPopUp(OwnedStock stockItem) => await DialogService.OpenAsync(stockItem.Name + " (" + stockItem.Symbol +")", ds =>
+        @<div>
+            <label>How many stocks do you want to sell? </label> <br>
+             <div><RadzenNumeric TValue="int" Change="((args) => OnNumberChanged(args, stockItem)) "/> </div> 
+             @* <input type="number"  @bind="newTransaction.Quantity">  *@
+            <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Sell" Click="(() => CreateTransaction(stockItem))"></RadzenButton>
+
+        </div>);
+    
+    private void CreateTransaction( OwnedStock stock)
+    {
+        
+        newTransaction.StockSymbol = stock.Symbol;
+        Console.WriteLine(newTransaction.StockSymbol + "  "+ newTransaction.Quantity);
+        // transaction.Account = CachedAccount.GetCachedAccount();
+        // transaction.Price = (decimal) stock.Price;
+        // transaction.IsBuy = true;
+        // transaction.StockSymbol = stock.Symbol;
+        // try
+        // {
+        //     TransactionService.BuyStock(transaction);
+        //     DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
+        // }
+        // catch (Exception e)
+        // {
+        //     Console.WriteLine(e);
+        //     DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck",CancelButtonText = "Cancel"  });
+        //
+        // }
+        
+        
+        
+    }
+    
+    
+    private void OnNumberChanged(int args, OwnedStock stock)
+    {
+        newTransaction.Quantity = args;
+        Console.WriteLine("  "+ newTransaction.Quantity);
+
+    }
 }
