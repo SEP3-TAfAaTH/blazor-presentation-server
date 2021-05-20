@@ -28,11 +28,19 @@ namespace BlazorPresentationServer.Services
             {
                 throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
             }
+            
         }
 
-        public Task SellStock(Transaction transaction)
+        public async Task SellStock(Transaction transaction)
         {
-            throw new System.NotImplementedException();
+            var accountJson = new StringContent(
+                JsonSerializer.Serialize(transaction, typeof(Transaction), new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json");
+
+            using var httpResponse = await client.PostAsync("/account", accountJson);
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
+            }
         }
 
         public async Task<List<Transaction>> GetAllTransactionsByAccountId(long id)
@@ -44,6 +52,17 @@ namespace BlazorPresentationServer.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
             return transactions;
+        }
+
+        public async Task<Transaction> GetTransactionById(long id)
+        {
+            Task<string> stringAsync = client.GetStringAsync($"transaction/{id}");
+            string message = await stringAsync;
+            Transaction transaction = JsonSerializer.Deserialize<Transaction>(message, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            return transaction;
         }
     }
 }
