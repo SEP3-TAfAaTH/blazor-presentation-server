@@ -34,7 +34,7 @@ namespace BlazorPresentationServer.Services
             var accountJson = new StringContent(
                 JsonSerializer.Serialize(account, typeof(Account), new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json");
 
-            using var httpResponse = await client.PutAsync("/account", accountJson);
+            using var httpResponse = await client.PutAsync($"/account/{account.Id}", accountJson);
             if (!httpResponse.IsSuccessStatusCode)
             {
                 throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);

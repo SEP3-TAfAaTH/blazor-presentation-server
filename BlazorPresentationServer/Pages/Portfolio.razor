@@ -103,7 +103,7 @@
             else
             {
                 var stock = ownedStocks.First(s => s.Symbol.Equals(t.StockSymbol));
-                if (t.Buy)
+                if (t.IsBuy)
                 {
                     stock.Quantity += t.Quantity;
                     stock.TotalCost += (double) (t.Quantity * t.Price);
@@ -166,7 +166,7 @@
                         <tr>
                             <td>@transactionItem.DateCreated</td>
                             <td>@stockItem.Symbol</td>
-                            @if (transactionItem.Buy)
+                            @if (transactionItem.IsBuy)
                             {
                                 <td>Buy</td>
                             }

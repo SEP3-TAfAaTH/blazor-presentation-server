@@ -12,11 +12,11 @@ namespace BlazorPresentationServer.Model
         public int Quantity { get; set; }
         public DateTime DateCreated { get; set; }
         public Decimal Price { get; set; }
-        public bool Buy { get; set; }
+        public bool IsBuy { get; set; }
 
         public override string ToString()
         {
-            return $"Id: {Id}, Stock Symbol: {StockSymbol}, Price: {Price}, Quantity: {Quantity} IsBuy: {Buy}";
+            return $"Id: {Id}, Stock Symbol: {StockSymbol}, Price: {Price}, Quantity: {Quantity} IsBuy: {IsBuy}";
         }
     }
 }
