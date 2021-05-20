@@ -16,14 +16,48 @@
         
         <div class="card">
             <h4 class="card-header" style="background-color: #CDCDCD ">Tesla Inc</h4>
-            <div class="card-body" style="background-color: #94BFBE">
-                <label>Price</label> <text style="font-size: 14px" >@tslaStock.Price</text> <br>
-                <label>Percentage increase (every minute)</label> <text style="font-size: 14px" >@tslaStock.Percent_Change</text> <br>
-                <RadzenButton Text="More Details" Click=@(args => ShowInlineDialog(tslaStock)) />
+            <div class="card-body" style="color:#3D7489; background-color: lightgray">
+                <label>Price: </label> <text style="font-size: 14px" >@tslaStock.Price</text> <br>
+                <label>Percentage increase (every minute): </label> <text style="font-size: 14px" >@tslaStock.Percent_Change</text> <br>
+                
+                
+                
+                <RadzenAccordion Multiple="true"  >
+                    <Items>
+                        <RadzenAccordionItem Text="Buy"   Style="margin-bottom: 10px; margin-top: 30px;width: 200px; color: black "  class="rz-accordion-content">
+                            @tslaStock.Name ( @tslaStock.Symbol )  <br/>
+                            <div>
+                                        <div>
+                                            <label>Company name: @tslaStock.Name</label>
+                                        </div>
+                                        <div>
+                                            <label>Stock symbol: @tslaStock.Symbol</label>
+                                        </div>
+                                        <div>
+                                            <label>Quantity: </label> <RadzenNumeric TValue="int" Change=@(args => OnNumberChanged(args, "Numeric")) />
+                                        </div>
+                                        <div>
+                                            <label>Current price: @tslaStock.Price</label>
+                                        </div>
+                                        <div>
+                                            <label>Total price: @(_transaction.Quantity*tslaStock.Price)</label>
+                                        </div>
+                                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Buy" Click=@(args => CreateTransaction(_transaction))></RadzenButton>
+                                       
+                                    </div>
+                                
+                                
+
+                                            
+                        </RadzenAccordionItem>
+                    </Items>
+                </RadzenAccordion>
+            
+            
                 
                 <RadzenAccordion Multiple="true" >
                     <Items>
-                        <RadzenAccordionItem Text="More Details" class="btn btn-link">
+                        <RadzenAccordionItem Text="More Details" Style="margin-bottom: 10px; margin-top: 30px; width: 200px; "  class="rz-accordion-content">
                             Details for Orders <br/>
                             <label>High</label> <text  style="font-size: 14px">@tslaStock.High</text> <br>
                             <label>Low</label> <text  style="font-size: 14px" > @tslaStock.Low</text> <br>
@@ -55,15 +89,46 @@
         </div>
         <div class="card" style=" margin-top: 30px; background-color: #CDCDCD ">
             <h4 class="card-header">Microsoft Corporation</h4>
-            <div class="card-body" style="background-color: #94BFBE">
+            <div class="card-body" style="color:#3D7489; background-color: lightgray">
                 <label>Price</label> <text style="font-size: 14px" >@msftStock.Price</text> <br>
                             
                 <label>Percentage increase (every minute)</label> <text style="font-size: 14px" >@msftStock.Percent_Change</text> <br>
                 @* <button class="btn btn-success" style="margin-bottom: 10px" @onclick="">Buy</button> *@
-                            
+                   
+                <RadzenAccordion Multiple="true"  >
+                                    <Items>
+                                        <RadzenAccordionItem Text="Buy"   Style="margin-bottom: 10px; margin-top: 30px;width: 200px; "  class="rz-accordion-content">
+                                            @tslaStock.Name ( @msftStock.Symbol )  <br/>
+                                            <div >
+                                                        <div>
+                                                            <label>Company name: @msftStock.Name</label>
+                                                        </div>
+                                                        <div>
+                                                            <label>Stock symbol: @msftStock.Symbol</label>
+                                                        </div>
+                                                        <div>
+                                                            <label>Quantity: </label> <RadzenNumeric TValue="int" Change=@(args => OnNumberChanged(args, "Numeric")) />
+                                                        </div>
+                                                        <div>
+                                                            <label>Current price: @msftStock.Price</label>
+                                                        </div>
+                                                        <div>
+                                                            <label>Total price: @(_transaction.Quantity*msftStock.Price)</label>
+                                                        </div>
+                                                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Buy" Click=@(args => CreateTransaction(_transaction))></RadzenButton>
+                                                       
+                                                    </div>
+                                                
+                                                
+                
+                                                            
+                                        </RadzenAccordionItem>
+                                    </Items>
+                                </RadzenAccordion>
+                
                 <RadzenAccordion Multiple="true" >
                     <Items>
-                        <RadzenAccordionItem Text="More Details" class="btn btn-link">
+                        <RadzenAccordionItem Text="More Details" Style="margin-bottom: 10px; margin-top: 30px; width: 200px; "  class="rz-accordion-content">
                             Details for Orders <br/>
                             <label>High</label> <text  style="font-size: 14px">@msftStock.High</text> <br>
                                         
@@ -99,24 +164,31 @@
 @code {
     Stock tslaStock = new Stock();
     Stock msftStock = new Stock();
-    
+
     Stock[] teslaStock = new Stock[30];
     Stock[] microStock = new Stock[30];
 
-    Transaction _transaction;
-    Decimal total;
+    Transaction _transaction = new Transaction();
     
+    
+    Transaction newTransaction;
+
+
+
+    Decimal total;
+
     bool smooth = false;
     bool orderOpened;
-    
+
     protected override async Task OnInitializedAsync()
     {
+        tslaStock.Price = 155;
         _transaction = new Transaction();
-        tslaStock = await StockService.GetStockAsync("TSLA");
+    /*tslaStock = await StockService.GetStockAsync("TSLA");
         teslaStock = await StockService.GetStockPriceListAsync("TSLA");
         
         msftStock = await StockService.GetStockAsync("MSFT");
-        microStock = await StockService.GetStockPriceListAsync("MSFT");
+        microStock = await StockService.GetStockPriceListAsync("MSFT");*/
     }
     
     protected override void OnInitialized()
@@ -133,6 +205,14 @@
 
     void Close(dynamic result)
     {
+        if (result.Equals("true"))
+        {
+            Console.WriteLine("TRUEEE");
+        }
+        else
+        {
+            Console.WriteLine("Falseee");
+        }
         Console.WriteLine("Dialog closed");
     }
 
@@ -141,33 +221,23 @@
         return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
     }
 
-    async Task ShowInlineDialog(Stock stock) => await DialogService.OpenAsync("Buy " + stock.Name + " (" + stock.Symbol + ") stocks", ds =>
-        
-        @<div>
-            <div>
-                <label>Company name: @stock.Name</label>
-            </div>
-            <div>
-                <label>Stock symbol: @stock.Symbol</label>
-            </div>
-            <div>
-                <label>Quantity: </label> <input type="number" min="1" max="5" step="1" style="width: 75px"
-                                                 bind-Value="@_transaction.Quantity">
-            </div>
-            <div>
-                <label>Current price: @stock.Price</label>
-            </div>
-            <div>
-                <label>Total price: @(_transaction.Quantity*stock.Price)</label>
-            </div>
-            
-            <RadzenButton Text="Ok" Click="() => ds.Close(true)" Style="margin-bottom: 10px; width: 150px"/>
-            <RadzenButton Text="Cancel" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Secondary" Style="margin-bottom: 10px; width: 150px"/>
-        </div>);
+   
     
-    public async Task BuyStock()
+    private void CreateTransaction(Transaction transaction)
     {
+        Console.WriteLine("BLABLABLA: " + transaction.Quantity);
+        DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
         
     }
+
+    private void OnNumberChanged(int args, string numeric)
+    {
+        _transaction.Quantity = args;
+        
+    }
+
 }
+
+    
+
 
