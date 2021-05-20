@@ -10,5 +10,7 @@ namespace BlazorPresentationServer.Services
         Task SellStock(Transaction transaction);
 
         Task<List<Transaction>>GetAllTransactionsByAccountId(long id);
+        Task<Transaction> GetTransactionById(long id);
+        
     }
 }
