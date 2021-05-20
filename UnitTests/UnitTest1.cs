@@ -8,6 +8,7 @@ using BlazorPresentationServer.Services;
 using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace UnitTests
@@ -16,7 +17,7 @@ namespace UnitTests
     {
         private readonly ITestOutputHelper _helper;
         private IStockService StockService;
-
+        
         // public UnitTest1(ITestOutputHelper helper)
         // {
         //     _helper = helper;
