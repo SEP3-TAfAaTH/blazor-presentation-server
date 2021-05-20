@@ -168,7 +168,7 @@
     Stock[] teslaStock = new Stock[30];
     Stock[] microStock = new Stock[30];
 
-    Transaction _transaction = new Transaction();
+    Transaction _transaction;
     
     
     Transaction newTransaction;
@@ -182,13 +182,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        tslaStock.Price = 155;
         _transaction = new Transaction();
-    /*tslaStock = await StockService.GetStockAsync("TSLA");
+        
+        tslaStock = await StockService.GetStockAsync("TSLA");
         teslaStock = await StockService.GetStockPriceListAsync("TSLA");
         
         msftStock = await StockService.GetStockAsync("MSFT");
-        microStock = await StockService.GetStockPriceListAsync("MSFT");*/
+        microStock = await StockService.GetStockPriceListAsync("MSFT");
     }
     
     protected override void OnInitialized()
