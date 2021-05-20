@@ -1,279 +1,173 @@
 @page "/AvailableStocks"
-@using Radzen
-@using Radzen.Blazor
 @using System.Globalization
 @using BlazorPresentationServer.Model
 @using BlazorPresentationServer.Services
 @using Microsoft.AspNetCore.Components
-@inject Services.IAvailableStockService AvailableStockService
 @inject IStockService StockService
+@inject DialogService DialogService
 
 <div class="card">
     <h4 class="card-header" style="background-color: #415A77; color: white ">Available Stocks</h4>
     <div class="card-body">
         <label>
-                Filter By Name: 
-                <input  />
-            </label>
+            Filter By Name: 
+            <input  />
+        </label>
         
         <div class="card">
-            <h4 class="card-header" style="background-color: #CDCDCD ">Tesla</h4>
+            <h4 class="card-header" style="background-color: #CDCDCD ">Tesla Inc</h4>
             <div class="card-body" style="background-color: #94BFBE">
-                <label>Price</label> <text style="font-size: 14px" >@stockPrice</text> <br>
-                
-                <label>Percentage increase (every minute)</label> <text style="font-size: 14px" >@pIncrease</text> <br>
-                <button class="btn btn-success" style="margin-bottom: 10px" @onclick="UpdateData">Buy</button>
+                <label>Price</label> <text style="font-size: 14px" >@tslaStock.Price</text> <br>
+                <label>Percentage increase (every minute)</label> <text style="font-size: 14px" >@tslaStock.Percent_Change</text> <br>
+                <RadzenButton Text="More Details" Click=@(args => ShowInlineDialog(tslaStock)) />
                 
                 <RadzenAccordion Multiple="true" >
                     <Items>
                         <RadzenAccordionItem Text="More Details" class="btn btn-link">
                             Details for Orders <br/>
-                            <label>Daily high</label> <text  style="font-size: 14px">@dailyHigh</text> <br>
-                            
-                            <label>Daily low</label> <text  style="font-size: 14px" > @dailyLow</text> <br>
-                            <label>Previous close</label> <text  style="font-size: 14px" > @previousClose</text> <br>
-                            <label>Average in past x period</label> <text  style="font-size: 14px" > @avgInPast</text> <br>
-                            <label>Highest and lowest price of the year</label> <text  style="font-size: 14px" > @highLowPrice</text> <br>
+                            <label>High</label> <text  style="font-size: 14px">@tslaStock.High</text> <br>
+                            <label>Low</label> <text  style="font-size: 14px" > @tslaStock.Low</text> <br>
+                            <label>Close</label> <text  style="font-size: 14px" > @tslaStock.Close</text> <br>
+                            <label>Average in past x period</label> <text  style="font-size: 14px" > </text> <br>
+                            <label>Highest and lowest price of the year</label> <text  style="font-size: 14px" ></text> <br>
                             
                             <h1>Radzen Blazor Chart with line series</h1>
-                                <div class="row">
-                                    <div class="col-md-6 col-sm-12 p-4">
-                                        <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label>
-                                        <RadzenChart>
-                                            @* <RadzenLineSeries Smooth="@smooth" Data="@revenue2019" CategoryProperty="Date" Title="2019" LineType="LineType.Dashed" ValueProperty="Revenue"> *@
-                                            @*     <RadzenMarkers MarkerType="MarkerType.Square" /> *@
-                                            @* </RadzenLineSeries> *@
-                                            @* <RadzenLineSeries Smooth="@smooth" Data="@revenue2020" CategoryProperty="Date" Title="2020" ValueProperty="Revenue"> *@
-                                            @*     <RadzenMarkers MarkerType="MarkerType.Circle" /> *@
-                                            @* </RadzenLineSeries> *@
-                                            <RadzenLineSeries Smooth="@smooth" Data="@appleStock" CategoryProperty="DateTime" Title="Apple Inc" LineType="LineType.Dashed" ValueProperty="Close">
-                                                <RadzenMarkers MarkerType="MarkerType.Square" />
-                                            </RadzenLineSeries>
-                                            @* <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}" /> *@
-                                            <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}" />
-                                            <RadzenValueAxis Formatter="@FormatAsUSD">
-                                                <RadzenGridLines Visible="true" />
-                                                <RadzenAxisTitle Text="Close price in USD" />
-                                            </RadzenValueAxis>
-                                        </RadzenChart>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12 p-4">
+                                    <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label>
+                                    <RadzenChart>
+                                        <RadzenAreaSeries Smooth="@smooth" Data="@teslaStock" CategoryProperty="DateTime" Title="Tesla Inc" LineType="LineType.Dashed" ValueProperty="Close">
+                                            <RadzenMarkers MarkerType="MarkerType.Square" />
+                                        </RadzenAreaSeries>
+                                        <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}" />
+                                        <RadzenValueAxis Formatter="@FormatAsUSD">
+                                            <RadzenGridLines Visible="true" />
+                                            <RadzenAxisTitle Text="Close price in USD" />
+                                        </RadzenValueAxis>
+                                    </RadzenChart>
                                 </div>
+                            </div>
                         </RadzenAccordionItem>
                     </Items>
                 </RadzenAccordion>
-                
-                
             </div>
 
         </div>
         <div class="card" style=" margin-top: 30px; background-color: #CDCDCD ">
-            <h4 class="card-header">Nvidia</h4>
+            <h4 class="card-header">Microsoft Corporation</h4>
             <div class="card-body" style="background-color: #94BFBE">
-                <label>Price</label> <br>
-                <label>Graph</label>
+                <label>Price</label> <text style="font-size: 14px" >@msftStock.Price</text> <br>
+                            
+                <label>Percentage increase (every minute)</label> <text style="font-size: 14px" >@msftStock.Percent_Change</text> <br>
+                @* <button class="btn btn-success" style="margin-bottom: 10px" @onclick="">Buy</button> *@
+                            
+                <RadzenAccordion Multiple="true" >
+                    <Items>
+                        <RadzenAccordionItem Text="More Details" class="btn btn-link">
+                            Details for Orders <br/>
+                            <label>High</label> <text  style="font-size: 14px">@msftStock.High</text> <br>
+                                        
+                            <label>Low</label> <text  style="font-size: 14px" > @msftStock.Low</text> <br>
+                            <label>Close</label> <text  style="font-size: 14px" > @msftStock.Close</text> <br>
+                            <label>Average in past x period</label> <text  style="font-size: 14px" > </text> <br>
+                            <label>Highest and lowest price of the year</label> <text  style="font-size: 14px" ></text> <br>
+                                        
+                            <h1>Radzen Blazor Chart with line series</h1>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12 p-4">
+                                    <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label>
+                                    <RadzenChart>
+                                        <RadzenAreaSeries Smooth="@smooth" Data="@microStock" CategoryProperty="DateTime" Title="Microsoft Corporation" LineType="LineType.Dashed" ValueProperty="Close">
+                                            <RadzenMarkers MarkerType="MarkerType.Square" />
+                                        </RadzenAreaSeries>
+                                        <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}" />
+                                        <RadzenValueAxis Formatter="@FormatAsUSD">
+                                            <RadzenGridLines Visible="true" />
+                                            <RadzenAxisTitle Text="Close price in USD" />
+                                        </RadzenValueAxis>
+                                    </RadzenChart>
+                                </div>
+                            </div>
+                        </RadzenAccordionItem>
+                    </Items>
+                </RadzenAccordion>
             </div>
-        </div>
-        <div class="card" style=" margin-top: 30px; background-color: #CDCDCD ">
-            <h4 class="card-header">Dacia</h4>
-            <div class="card-body" style="background-color: #415A77">
-                <label>Price</label> <br>
-                <label>Graph</label>
-            </div>
-
-        </div>
-        <div class="card" style=" margin-top: 30px">
-            <h4 class="card-header">Apple</h4>
-            <div class="card-body">
-                <label>Price</label> <br>
-                <label>Graph</label>
-            </div>
-        </div>
-        <div class="card" style=" margin-top: 30px">
-            <h4 class="card-header">LEGO</h4>
-            <div class="card-body">
-                <label>Price</label> <br>
-                <label>Graph</label>
-            </div>
-
         </div>
     </div>
 </div>
 
 @code {
-    Stock _stock = new Stock();
-    double stockPrice;
-    double pIncrease;
-    double dailyHigh;
-    double dailyLow;
-    double previousClose;
-    double avgInPast;
-    double highLowPrice;
-    Stock[] appleStock;
+    Stock tslaStock = new Stock();
+    Stock msftStock = new Stock();
     
-    
-      bool smooth = false;
+    Stock[] teslaStock = new Stock[30];
+    Stock[] microStock = new Stock[30];
 
+    Transaction _transaction;
+    Decimal total;
+    
+    bool smooth = false;
+    bool orderOpened;
+    
     protected override async Task OnInitializedAsync()
     {
-        _stock = await StockService.GetStockAsync("AAPL");
-        dailyHigh = _stock.High;
-        dailyLow = _stock.Low;
-        previousClose = _stock.Close;
-        pIncrease = _stock.Percent_Change;
-
-        stockPrice = await StockService.GetStockPriceAsync("AAPL");
-        appleStock = await StockService.GetStockPriceListAsync("AAPL");
+        _transaction = new Transaction();
+        tslaStock = await StockService.GetStockAsync("TSLA");
+        teslaStock = await StockService.GetStockPriceListAsync("TSLA");
+        
+        msftStock = await StockService.GetStockAsync("MSFT");
+        microStock = await StockService.GetStockPriceListAsync("MSFT");
     }
     
-    class DataItem
+    protected override void OnInitialized()
     {
-        public DateTime Date { get; set; }
-        public double Revenue { get; set; }
+        DialogService.OnOpen += Open;
+        DialogService.OnClose += Close;
+    }
+
+    void Open(string title, Type type, Dictionary<string, object> parameters, DialogOptions options)
+    {
+        Console.WriteLine("Dialog opened");
+        
+    }
+
+    void Close(dynamic result)
+    {
+        Console.WriteLine("Dialog closed");
     }
 
     string FormatAsUSD(object value)
     {
         return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
     }
+
+    async Task ShowInlineDialog(Stock stock) => await DialogService.OpenAsync("Buy " + stock.Name + " (" + stock.Symbol + ") stocks", ds =>
+        
+        @<div>
+            <div>
+                <label>Company name: @stock.Name</label>
+            </div>
+            <div>
+                <label>Stock symbol: @stock.Symbol</label>
+            </div>
+            <div>
+                <label>Quantity: </label> <input type="number" min="1" max="5" step="1" style="width: 75px"
+                                                 bind-Value="@_transaction.Quantity">
+            </div>
+            <div>
+                <label>Current price: @stock.Price</label>
+            </div>
+            <div>
+                <label>Total price: @(_transaction.Quantity*stock.Price)</label>
+            </div>
+            
+            <RadzenButton Text="Ok" Click="() => ds.Close(true)" Style="margin-bottom: 10px; width: 150px"/>
+            <RadzenButton Text="Cancel" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Secondary" Style="margin-bottom: 10px; width: 150px"/>
+        </div>);
     
-    private void UpdateData()
+    public async Task BuyStock()
     {
-        GeneralStock tempStock = AvailableStockService.GatherInformations().Result;
-        stockPrice = tempStock.Price;
-        pIncrease = tempStock.PIncrease;
-        dailyHigh = tempStock.DailyHigh;
-        dailyLow = tempStock.DailyLow;
-        previousClose = tempStock.PreviousClose;
-        avgInPast = tempStock.AvgInPast;
-        highLowPrice = tempStock.HighLowPrice;
+        
     }
-
-    DataItem[] revenue2019 = new DataItem[] {
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-01-01"),
-            Revenue = 234000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-02-01"),
-            Revenue = 269000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-03-01"),
-            Revenue = 233000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-04-01"),
-            Revenue = 244000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-05-01"),
-            Revenue = 214000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-06-01"),
-            Revenue = 253000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-07-01"),
-            Revenue = 274000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-08-01"),
-            Revenue = 284000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-09-01"),
-            Revenue = 273000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-10-01"),
-            Revenue = 282000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-11-01"),
-            Revenue = 289000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-12-01"),
-            Revenue = 294000
-        }
-    };
-
-    DataItem[] revenue2020 = new DataItem[] {
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-01-01"),
-            Revenue = 334000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-02-01"),
-            Revenue = 369000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-03-01"),
-            Revenue = 333000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-04-01"),
-            Revenue = 344000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-05-01"),
-            Revenue = 314000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-06-01"),
-            Revenue = 353000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-07-01"),
-            Revenue = 374000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-08-01"),
-            Revenue = 384000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-09-01"),
-            Revenue = 373000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-10-01"),
-            Revenue = 382000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-11-01"),
-            Revenue = 389000
-        },
-        new DataItem
-        {
-            Date = DateTime.Parse("2019-12-01"),
-            Revenue = 394000
-        }
-    };
-
-    
-
 }
+
