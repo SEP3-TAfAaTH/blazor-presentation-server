@@ -1,10 +1,13 @@
 @page "/AvailableStocks"
 @using System.Globalization
+@using BlazorPresentationServer.Authentication
 @using BlazorPresentationServer.Model
 @using BlazorPresentationServer.Services
 @using Microsoft.AspNetCore.Components
 @inject IStockService StockService
 @inject DialogService DialogService
+@inject ITransactionService TransactionService
+@inject ICachedAccount CachedAccount
 
 <div class="card">
     <h4 class="card-header" style="background-color: #415A77; color: white ">Available Stocks</h4>
@@ -19,42 +22,31 @@
             <div class="card-body" style="color:#3D7489; background-color: lightgray">
                 <label>Price: </label> <text style="font-size: 14px" >@tslaStock.Price</text> <br>
                 <label>Percentage increase (every minute): </label> <text style="font-size: 14px" >@tslaStock.Percent_Change</text> <br>
-                
-                
-                
                 <RadzenAccordion Multiple="true"  >
                     <Items>
                         <RadzenAccordionItem Text="Buy"   Style="margin-bottom: 10px; margin-top: 30px;width: 200px; color: black "  class="rz-accordion-content">
                             @tslaStock.Name ( @tslaStock.Symbol )  <br/>
                             <div>
-                                        <div>
-                                            <label>Company name: @tslaStock.Name</label>
-                                        </div>
-                                        <div>
-                                            <label>Stock symbol: @tslaStock.Symbol</label>
-                                        </div>
-                                        <div>
-                                            <label>Quantity: </label> <RadzenNumeric TValue="int" Change=@(args => OnNumberChanged(args, "Numeric")) />
-                                        </div>
-                                        <div>
-                                            <label>Current price: @tslaStock.Price</label>
-                                        </div>
-                                        <div>
-                                            <label>Total price: @(_transaction.Quantity*tslaStock.Price)</label>
-                                        </div>
-                                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Buy" Click=@(args => CreateTransaction(_transaction))></RadzenButton>
-                                       
-                                    </div>
-                                
-                                
-
-                                            
+                                <div>
+                                    <label>Company name: @tslaStock.Name</label>
+                                </div>
+                                <div>
+                                    <label>Stock symbol: @tslaStock.Symbol</label>
+                                </div>
+                                <div>
+                                    <label>Quantity: </label> <RadzenNumeric Name="qnt" TValue="int" Change=@(args => OnNumberChanged(args, teslaTransaction)) />
+                                </div>
+                                <div>
+                                    <label>Current price: @tslaStock.Price</label>
+                                </div>
+                                <div>
+                                    <label>Total price: @(teslaTransaction.Quantity*tslaStock.Price)</label>
+                                </div>
+                                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Buy" Click=@(args => CreateTransaction(teslaTransaction,tslaStock))></RadzenButton>
+                            </div>
                         </RadzenAccordionItem>
                     </Items>
                 </RadzenAccordion>
-            
-            
-                
                 <RadzenAccordion Multiple="true" >
                     <Items>
                         <RadzenAccordionItem Text="More Details" Style="margin-bottom: 10px; margin-top: 30px; width: 200px; "  class="rz-accordion-content">
@@ -96,36 +88,31 @@
                 @* <button class="btn btn-success" style="margin-bottom: 10px" @onclick="">Buy</button> *@
                    
                 <RadzenAccordion Multiple="true"  >
-                                    <Items>
-                                        <RadzenAccordionItem Text="Buy"   Style="margin-bottom: 10px; margin-top: 30px;width: 200px; "  class="rz-accordion-content">
-                                            @tslaStock.Name ( @msftStock.Symbol )  <br/>
-                                            <div >
-                                                        <div>
-                                                            <label>Company name: @msftStock.Name</label>
-                                                        </div>
-                                                        <div>
-                                                            <label>Stock symbol: @msftStock.Symbol</label>
-                                                        </div>
-                                                        <div>
-                                                            <label>Quantity: </label> <RadzenNumeric TValue="int" Change=@(args => OnNumberChanged(args, "Numeric")) />
-                                                        </div>
-                                                        <div>
-                                                            <label>Current price: @msftStock.Price</label>
-                                                        </div>
-                                                        <div>
-                                                            <label>Total price: @(_transaction.Quantity*msftStock.Price)</label>
-                                                        </div>
-                                                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Buy" Click=@(args => CreateTransaction(_transaction))></RadzenButton>
-                                                       
-                                                    </div>
-                                                
-                                                
-                
-                                                            
-                                        </RadzenAccordionItem>
-                                    </Items>
-                                </RadzenAccordion>
-                
+                    <Items>
+                        <RadzenAccordionItem Text="Buy"   Style="margin-bottom: 10px; margin-top: 30px;width: 200px; "  class="rz-accordion-content">
+                            @msftStock.Name ( @msftStock.Symbol )  <br/>
+                            <div >
+                                <div>
+                                    <label>Company name: @msftStock.Name</label>
+                                </div>
+                                <div>
+                                    <label>Stock symbol: @msftStock.Symbol</label>
+                                </div>
+                                <div>
+                                    <label>Quantity: </label> <RadzenNumeric TValue="int" Change=@(args => OnNumberChanged(args, microTransaction)) />
+                                </div>
+                                <div>
+                                    <label>Current price: @msftStock.Price</label>
+                                </div>
+                                <div>
+                                    <label>Total price: @(microTransaction.Quantity*msftStock.Price)</label>
+                                </div>
+                                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Buy" Click=@(args => CreateTransaction(microTransaction, msftStock))></RadzenButton>
+                            </div>
+                        </RadzenAccordionItem>
+                    </Items>
+                </RadzenAccordion>
+
                 <RadzenAccordion Multiple="true" >
                     <Items>
                         <RadzenAccordionItem Text="More Details" Style="margin-bottom: 10px; margin-top: 30px; width: 200px; "  class="rz-accordion-content">
@@ -168,10 +155,8 @@
     Stock[] teslaStock = new Stock[30];
     Stock[] microStock = new Stock[30];
 
-    Transaction _transaction;
-    
-    
-    Transaction newTransaction;
+    Transaction teslaTransaction;
+    Transaction microTransaction;
 
 
 
@@ -182,7 +167,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _transaction = new Transaction();
+        teslaTransaction = new Transaction();
+        microTransaction = new Transaction();
         
         tslaStock = await StockService.GetStockAsync("TSLA");
         teslaStock = await StockService.GetStockPriceListAsync("TSLA");
@@ -223,16 +209,31 @@
 
    
     
-    private void CreateTransaction(Transaction transaction)
+    private void CreateTransaction(Transaction transaction, Stock stock)
     {
-        Console.WriteLine("BLABLABLA: " + transaction.Quantity);
-        DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
+        transaction.Account = CachedAccount.GetCachedAccount();
+        transaction.Price = (decimal) stock.Price;
+        transaction.IsBuy = true;
+        transaction.StockSymbol = stock.Symbol;
+        try
+        {
+            TransactionService.BuyStock(transaction);
+            DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck",CancelButtonText = "Cancel"  });
+
+        }
+        
+        
         
     }
 
-    private void OnNumberChanged(int args, string numeric)
+    private void OnNumberChanged(int args, Transaction transaction)
     {
-        _transaction.Quantity = args;
+        transaction.Quantity = args;
         
     }
 

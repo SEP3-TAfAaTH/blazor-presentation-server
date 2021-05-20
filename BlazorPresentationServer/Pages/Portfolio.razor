@@ -74,7 +74,7 @@
     protected override async Task OnInitializedAsync()
     {
         transactions = new List<Transaction>();
-        transactions = await TransactionService.GetAllTransactionsByAccountId(2);
+        transactions = await TransactionService.GetAllTransactionsByAccountId(CachedAccount.GetCachedAccount().Id);
         
         foreach (var t in transactions)
         {
@@ -107,7 +107,6 @@
                 {
                     stock.Quantity += t.Quantity;
                     stock.TotalCost += (double) (t.Quantity * t.Price);
-                    // stock.PurchasePrice += (double) t.Price * t.Quantity;
                 }
                 else
                 {

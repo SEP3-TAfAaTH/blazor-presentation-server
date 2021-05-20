@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BlazorPresentationServer.Model;
@@ -79,17 +80,19 @@ namespace BlazorPresentationServer.Services
                 counter++;
                 Key = apikeys[keyIndex];
             }
-            
-            counter = 0;
-            if (keyIndex == apikeys.Count - 1) 
-            { 
-                keyIndex = 0;
-            }
             else
             {
-                keyIndex++;
+                counter = 0;
+                if (keyIndex == apikeys.Count - 1) 
+                { 
+                    keyIndex = 0;
+                }
+                else
+                {
+                    keyIndex++;
+                }
+                Key = apikeys[keyIndex];
             }
-            Key = apikeys[keyIndex];
         }
     }
 }
