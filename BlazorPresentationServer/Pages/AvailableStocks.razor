@@ -217,7 +217,7 @@
         transaction.StockSymbol = stock.Symbol;
         try
         {
-            TransactionService.BuyStock(transaction);
+            TransactionService.CreateTransactionAsync(transaction);
             DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
         }
         catch (Exception e)
@@ -226,9 +226,6 @@
             DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck",CancelButtonText = "Cancel"  });
 
         }
-        
-        
-        
     }
 
     private void OnNumberChanged(int args, Transaction transaction)
