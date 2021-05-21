@@ -35,7 +35,7 @@
                     <th>Symbol</th> 
                     <th>Quantity</th>
                     <th>Price</th>
-                    <th>Purchase Price</th>
+                    @* <th>Purchase Price</th> *@
                     <th>Total Value</th>
                     @* <th>TodaysChange</th>*@
                     <th>Total Gain Loss</th>
@@ -55,11 +55,10 @@
                         <td>@item.Symbol</td>
                         <td>@item.Quantity</td>
                         <td>$@item.Price</td>
-                        <td>$@item.PurchasePrice</td>
+                        @* <td>$@item.PurchasePrice</td> *@
                         <td>$@item.GetTotalValue()</td>
                         @* <td>@item.TodaysChange</td> *@
                         <td>$@item.GetGainLoss()</td>
-
                     </tr>
                 }
                 </tbody>
@@ -72,30 +71,24 @@
 @code {
     private IList<OwnedStock> ownedStocks = new List<OwnedStock>();
     private List<Transaction> transactions;
+    private List<Transaction> newTransactions;
 
-    Transaction newTransaction = new Transaction();
-    OwnedStock banana = new OwnedStock();
-    OwnedStock apple = new OwnedStock();
+    Transaction newTransaction;
     
-    
-    
+
     protected override async Task OnInitializedAsync()
     {
         transactions = new List<Transaction>();
-        //transactions = await TransactionService.GetAllTransactionsByAccountId(CachedAccount.GetCachedAccount().Id);
-        banana.Name = "Banana";
-        banana.Symbol = "BNNA";
-        banana.Price = 1;
-        ownedStocks.Add(banana);
+        newTransactions = new List<Transaction>();
+        transactions = await TransactionService.GetAllTransactionsByAccountId(CachedAccount.GetCachedAccount().Id);
+        SortTransactions();
         
-        apple.Name = "Apple";
-        apple.Symbol = "APPL";
-        apple.Price = 2;
-        ownedStocks.Add(apple);
+    }
+
+    private async void SortTransactions()
+    {
         foreach (var t in transactions)
         {
-           
-            
             bool unique = true;
             foreach (var owned in ownedStocks)
             {
@@ -117,6 +110,7 @@
                     TotalCost = (double) (t.Quantity * t.Price)
                 };
                 ownedStocks.Add(stock);
+                newTransactions.Add(new Transaction{StockSymbol = stock.Symbol});
             }
             else
             {
@@ -132,8 +126,8 @@
                     stock.TotalCost -= (double) (t.Quantity * t.Price);
                 }
             }
-            
         }
+        StateHasChanged();
     }
 
     private void NavigateToAvailableStock()
@@ -214,39 +208,33 @@
              <div><RadzenNumeric TValue="int" Change="((args) => OnNumberChanged(args, stockItem)) "/> </div> 
              @* <input type="number"  @bind="newTransaction.Quantity">  *@
             <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Sell" Click="(() => CreateTransaction(stockItem))"></RadzenButton>
-
         </div>);
     
-    private void CreateTransaction( OwnedStock stock)
+    private void CreateTransaction(OwnedStock stock)
     {
+        Transaction transaction = newTransactions.First(s => s.StockSymbol.Equals(stock.Symbol));
+        transaction.Account = CachedAccount.GetCachedAccount();
+        transaction.Price = (decimal) stock.Price;
+        transaction.IsBuy = false;
+        try
+        {
+            TransactionService.CreateTransactionAsync(transaction);
+            DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck",CancelButtonText = "Cancel"  });
         
-        newTransaction.StockSymbol = stock.Symbol;
-        Console.WriteLine(newTransaction.StockSymbol + "  "+ newTransaction.Quantity);
-        // transaction.Account = CachedAccount.GetCachedAccount();
-        // transaction.Price = (decimal) stock.Price;
-        // transaction.IsBuy = true;
-        // transaction.StockSymbol = stock.Symbol;
-        // try
-        // {
-        //     TransactionService.BuyStock(transaction);
-        //     DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
-        // }
-        // catch (Exception e)
-        // {
-        //     Console.WriteLine(e);
-        //     DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck",CancelButtonText = "Cancel"  });
-        //
-        // }
-        
-        
-        
+        }
     }
     
     
     private void OnNumberChanged(int args, OwnedStock stock)
     {
-        newTransaction.Quantity = args;
-        Console.WriteLine("  "+ newTransaction.Quantity);
+        Transaction transaction = newTransactions.First(s => s.StockSymbol.Equals(stock.Symbol));
+        transaction.Quantity = args;
+        Console.WriteLine(transaction.Quantity);
 
     }
 }

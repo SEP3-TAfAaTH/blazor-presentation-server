@@ -16,22 +16,9 @@ namespace BlazorPresentationServer.Services
         {
             this.client = client;
         }
-        
-        
-        public async Task BuyStock(Transaction transaction)
-        {
-            var transactionJson = new StringContent(
-                JsonSerializer.Serialize(transaction, typeof(Transaction), new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json");
 
-            using var httpResponse = await client.PostAsync("/transaction", transactionJson);
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
-            }
-            
-        }
 
-        public async Task SellStock(Transaction transaction)
+        public async Task CreateTransactionAsync(Transaction transaction)
         {
             var transactionJson = new StringContent(
                 JsonSerializer.Serialize(transaction, typeof(Transaction), new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json");
@@ -42,6 +29,7 @@ namespace BlazorPresentationServer.Services
                 throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
             }
         }
+        
 
         public async Task<List<Transaction>> GetAllTransactionsByAccountId(long id)
         {
