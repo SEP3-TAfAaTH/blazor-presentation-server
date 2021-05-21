@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using BlazorPresentationServer.Model;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -15,11 +17,16 @@ namespace BlazorPresentationServer.Services
         private const string ApiKey1 = "ced0265304804736b7cd16bb6c5e4332";
         private const string ApiKey2 = "f04e879f0da545829306ede67e813e27";
         private const string ApiKey3 = "fe7fb827aab34438b8ce632f7f6ccacb";
+        private const string ApiKey4 = "c523a60be5c54c4f952f933136b8b73f";
+        private const string ApiKey5 = "e9fc5f0530944e17b6de5bd26380eea1";
+        
         private string Key;
 
         private readonly List<string> apikeys;
         private int counter;
         private int keyIndex;
+
+        Random generator = new Random();
         
         
         private HttpClient client;
@@ -27,7 +34,7 @@ namespace BlazorPresentationServer.Services
         public StockService(HttpClient client)
         {
             this.client = client;
-            apikeys = new List<string> {ApiKey, ApiKey1, ApiKey2, ApiKey3};
+            apikeys = new List<string> {ApiKey, ApiKey1, ApiKey2, ApiKey3, ApiKey4, ApiKey5};
         }
         public async Task<JObject> Test()
         {
@@ -42,7 +49,7 @@ namespace BlazorPresentationServer.Services
         public async Task<Stock> GetStockAsync(string symbol)
         {
             GetAPIKey();
-            HttpResponseMessage response =
+            var response =
                 await client.GetAsync($"/quote?symbol={symbol}&interval=1day&apikey={Key}");
             string responseContent = await response.Content.ReadAsStringAsync();
             var jobject = JObject.Parse(responseContent);
@@ -65,9 +72,13 @@ namespace BlazorPresentationServer.Services
         public async Task<Stock[]> GetStockPriceListAsync(string symbol)
         {
             GetAPIKey();
-            HttpResponseMessage message =
+            HttpResponseMessage response =
                 await client.GetAsync($"/time_series?symbol={symbol}&interval=1day&apikey={Key}");
-            string responseContent = await message.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"{response.StatusCode}, {response.Content.ReadAsStringAsync().Result}"); //returns exception but not custom errormessage
+            }
+            string responseContent = await response.Content.ReadAsStringAsync();
             var jobject = JObject.Parse(responseContent);
             var list = JsonConvert.DeserializeObject<List<Stock>>(jobject["values"]?.ToString());
             return list.ToArray();
@@ -75,24 +86,8 @@ namespace BlazorPresentationServer.Services
 
         private void GetAPIKey()
         {
-            if (counter < 8)
-            {
-                counter++;
-                Key = apikeys[keyIndex];
-            }
-            else
-            {
-                counter = 0;
-                if (keyIndex == apikeys.Count - 1) 
-                { 
-                    keyIndex = 0;
-                }
-                else
-                {
-                    keyIndex++;
-                }
-                Key = apikeys[keyIndex];
-            }
+            var num = (generator.Next(0, 1000))%6;
+            Key = apikeys[num];
         }
     }
 }
