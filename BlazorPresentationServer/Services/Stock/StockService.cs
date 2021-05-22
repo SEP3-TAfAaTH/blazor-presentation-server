@@ -21,8 +21,6 @@ namespace BlazorPresentationServer.Services
         private string Key;
 
         private readonly List<string> apikeys;
-        private int counter;
-        private int keyIndex;
 
         Random generator = new Random();
         

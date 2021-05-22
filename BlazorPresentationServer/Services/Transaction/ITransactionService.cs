@@ -8,7 +8,7 @@ namespace BlazorPresentationServer.Services
     {
         Task CreateTransactionAsync(Transaction transaction);
         
-        Task<List<Transaction>>GetAllTransactionsByAccountId(long id);
+        Task<List<Transaction>> GetAllTransactionsByAccountId(long id);
         Task<Transaction> GetTransactionById(long id);
         
     }

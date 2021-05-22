@@ -49,6 +49,7 @@ namespace BlazorPresentationServer
             });
             services.AddSingleton<ICachedAccount, CachedAccount>();
             services.AddScoped<DialogService>();
+            services.AddScoped<NotificationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
