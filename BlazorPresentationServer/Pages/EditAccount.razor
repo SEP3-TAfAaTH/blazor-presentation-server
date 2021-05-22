@@ -6,6 +6,8 @@
 @inject NavigationManager NavigationManager
 @inject IAccountService _accountService
 @inject ICachedAccount CachedAccount
+@inject NotificationService NotificationService
+@inject DialogService DialogService
 
 
 @if (changedAccount == null)
@@ -40,6 +42,10 @@ else
                 <label>@errorMessage</label>
             </EditForm>
         </div>
+        <h4 class="card-header">Delete Account</h4>
+                    <div class="card-body">
+                        <button class="btn btn-danger" @onclick="DeleteAccount">I want to delete my account</button>
+                    </div>
     </div>
 }
 @code {
@@ -72,6 +78,18 @@ else
             Console.WriteLine(e.Message);
             errorMessage = e.Message;
         }
+    }
+    
+    private async Task DeleteAccount()
+    {
+        bool? result = await DialogService.Confirm("Your account will be deleted", "Are you sure?", new ConfirmOptions() {OkButtonText = "Agree",CancelButtonText = "Cancel"  });
+        Console.WriteLine(result.Value);
+        if (result ?? true)
+        {
+    //HERE COMES THE SUN.....I MEAN THE CODE FOR DELETE ACCOUNT :)
+            NotificationService.Notify (new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Delete", Detail = "Your account has been deleted", Duration = 4000});
+        }
+        
     }
 
 }

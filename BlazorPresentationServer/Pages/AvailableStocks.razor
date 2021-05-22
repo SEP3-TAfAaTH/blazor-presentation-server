@@ -8,6 +8,7 @@
 @inject DialogService DialogService
 @inject ITransactionService TransactionService
 @inject ICachedAccount CachedAccount
+@inject NotificationService NotificationService
 
 <div class="card">
     <h4 class="card-header" style="background-color: #415A77; color: white ">Available Stocks</h4>
@@ -215,15 +216,18 @@
         transaction.Price = (decimal) stock.Price;
         transaction.IsBuy = true;
         transaction.StockSymbol = stock.Symbol;
+        
         try
         {
             TransactionService.CreateTransactionAsync(transaction);
-            DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
+            NotificationService.Notify (new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = "Purchase is successful", Duration = 4000});
+            //DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck",CancelButtonText = "Cancel"  });
+            NotificationService.Notify (new NotificationMessage {Severity = NotificationSeverity.Warning, Summary = "Failure", Detail = "Transaction failed", Duration = 4000});
+            //DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck",CancelButtonText = "Cancel"  });
 
         }
     }
