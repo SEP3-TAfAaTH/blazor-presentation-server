@@ -216,19 +216,30 @@
         transaction.Price = (decimal) stock.Price;
         transaction.IsBuy = true;
         transaction.StockSymbol = stock.Symbol;
-        
-        try
+        if (transaction.Quantity < 1)
         {
-            TransactionService.CreateTransactionAsync(transaction);
-            NotificationService.Notify (new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = "Purchase is successful", Duration = 4000});
-            //DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
+            DialogService.Confirm("Invalid quantity", "Error", new ConfirmOptions() {OkButtonText = "Ok", CancelButtonText = "Cancel"});
         }
-        catch (Exception e)
+        else if (transaction.GetTotal() > transaction.Account.Balance)
         {
-            Console.WriteLine(e);
-            NotificationService.Notify (new NotificationMessage {Severity = NotificationSeverity.Warning, Summary = "Failure", Detail = "Transaction failed", Duration = 4000});
-            //DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck",CancelButtonText = "Cancel"  });
-
+            DialogService.Confirm($"Total: {transaction.GetTotal()},\n Account balance: {transaction.Account.Balance}","Insufficient funds", new ConfirmOptions() {OkButtonText = "Ok", CancelButtonText = "Cancel"});
+        }
+        else
+        {
+            try{
+                CachedAccount.GetCachedAccount().Balance -= transaction.GetTotal();
+                TransactionService.CreateTransactionAsync(transaction);
+                
+                NotificationService.Notify (new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = "Purchase is successful", Duration = 4000});
+                //DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                CachedAccount.GetCachedAccount().Balance += transaction.GetTotal();
+                NotificationService.Notify (new NotificationMessage {Severity = NotificationSeverity.Warning, Summary = "Failure", Detail = "Transaction failed", Duration = 4000});
+                //DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck",CancelButtonText = "Cancel"  });
+            }
         }
     }
 

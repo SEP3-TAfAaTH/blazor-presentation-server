@@ -13,7 +13,6 @@
     <h4 class="card-header" style="background-color: #415A77; color: white ">Balance</h4>
             <div class="card-body">
                 <div style="display: flex; align-content: center;"><textarea @bind="balance" disabled style="font-size: 50px; height: 80px; text-align: right; float: left;"></textarea> <p style="font-size: 50px; color: #415A77; margin-left: 20px; "> DKK</p></div>
-                
             </div>
     <h4 class="card-header">Portfolio</h4>
     <div class="card-body">
@@ -79,7 +78,7 @@
 </div>
 
 @code {
-    double balance = 12345.67;
+    Decimal balance;
     private IList<OwnedStock> ownedStocks = new List<OwnedStock>();
     private List<Transaction> transactions;
     private List<Transaction> newTransactions;
@@ -89,6 +88,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        balance = CachedAccount.GetCachedAccount().Balance;
         transactions = new List<Transaction>();
         newTransactions = new List<Transaction>();
         transactions = await TransactionService.GetAllTransactionsByAccountId(CachedAccount.GetCachedAccount().Id);
@@ -173,16 +173,16 @@
             <div class="row">
                 <div class="col-md-12">
                     <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Symbol</th>
-                                        <th>Type</th>
-                                        <th>Quantity</th>
-                                        <th>Purchase Price</th>
-                                        <th>Total Price</th>
-                                    </tr>
-                                    </thead>
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Symbol</th>
+                            <th>Type</th>
+                            <th>Quantity</th>
+                            <th>Purchase Price</th>
+                            <th>Total Price</th>
+                        </tr>
+                        </thead>
                     <tbody>
                     @foreach (var transactionItem in transactions.Where(t => t.StockSymbol.Equals(stockItem.Symbol)))
                     {
@@ -207,7 +207,6 @@
                     <RadzenButton Text="Ok" Click="() => ds.Close(true)" Style="margin-bottom: 10px; width: 150px"/>
                     <RadzenButton Text="Cancel" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Secondary" Style="margin-bottom: 10px; width: 150px"/>
                     <RadzenButton Text="Refresh" Click="(() => { orderID = 10249; ds.Refresh(); })" ButtonStyle="ButtonStyle.Info" Style="margin-bottom: 10px; width: 150px"/>
-
                 </div>
             </div>
         </div>);
@@ -224,20 +223,30 @@
     private void CreateTransaction(OwnedStock stock)
     {
         Transaction transaction = newTransactions.First(s => s.StockSymbol.Equals(stock.Symbol));
-        transaction.Account = CachedAccount.GetCachedAccount();
-        transaction.Price = (decimal) stock.Price;
-        transaction.IsBuy = false;
-        try
+        if (transaction.Quantity > stock.Quantity || transaction.Quantity < 1)
         {
-            TransactionService.CreateTransactionAsync(transaction);
-            DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
+            DialogService.Confirm("Invalid quantity", "Error", new ConfirmOptions() {OkButtonText = "Ok", CancelButtonText = "Cancel"});
         }
-        catch (Exception e)
+        else
         {
-            Console.WriteLine(e);
-            DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck",CancelButtonText = "Cancel"  });
-        
+            transaction.Price = (decimal) stock.Price;
+            transaction.IsBuy = false;
+            CachedAccount.GetCachedAccount().Balance += transaction.GetTotal();
+            transaction.Account = CachedAccount.GetCachedAccount();
+            try
+            {
+                TransactionService.CreateTransactionAsync(transaction);
+                DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great", CancelButtonText = "Cancel"});
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                CachedAccount.GetCachedAccount().Balance -= transaction.GetTotal();
+                DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck", CancelButtonText = "Cancel"});
+
+            }
         }
+
     }
     
     

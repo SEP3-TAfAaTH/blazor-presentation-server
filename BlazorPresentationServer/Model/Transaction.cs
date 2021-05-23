@@ -14,6 +14,10 @@ namespace BlazorPresentationServer.Model
         public Decimal Price { get; set; }
         public bool IsBuy { get; set; }
 
+        public Decimal GetTotal()
+        {
+            return Quantity * Price;
+        }
         public override string ToString()
         {
             return $"Id: {Id}, Stock Symbol: {StockSymbol}, Price: {Price}, Quantity: {Quantity} IsBuy: {IsBuy}";

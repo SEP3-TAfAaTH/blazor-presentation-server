@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlazorPresentationServer.Model
 {
@@ -10,5 +12,8 @@ namespace BlazorPresentationServer.Model
         [Required]
         [MinLength(6, ErrorMessage = "The password must be a minimum of 6 characters")]
         public string Password { get; set; }
+        
+        [DefaultValue(10000)]
+        public Decimal Balance { get; set; }
     }
 }
