@@ -5,7 +5,7 @@ namespace BlazorPresentationServer.Authentication
     public class CachedAccount : ICachedAccount
     {
         public Account cachedAccount { get; set; }
-        
+
         public Account GetCachedAccount()
         {
             return cachedAccount;

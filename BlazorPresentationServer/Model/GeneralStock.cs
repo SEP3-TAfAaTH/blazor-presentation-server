@@ -10,6 +10,5 @@ namespace BlazorPresentationServer.Model
         public double PreviousClose { get; set; }
         public double AvgInPast { get; set; }
         public double HighLowPrice { get; set; }
-        
     }
 }

@@ -1,15 +1,5 @@
-using System;
-using System.Collections;
-using System.Net.Http;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using BlazorPresentationServer.Model;
 using BlazorPresentationServer.Services;
-using Newtonsoft.Json;
-using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace UnitTests
 {
@@ -17,7 +7,7 @@ namespace UnitTests
     {
         private readonly ITestOutputHelper _helper;
         private IStockService StockService;
-        
+
         // public UnitTest1(ITestOutputHelper helper)
         // {
         //     _helper = helper;

@@ -7,9 +7,10 @@ namespace BlazorPresentationServer.Services
     public interface ITransactionService
     {
         Task CreateTransactionAsync(Transaction transaction);
-        
+
         Task<List<Transaction>> GetAllTransactionsByAccountId(long id);
+
+        Task DeleteAllTransactionsAsync(long id);
         Task<Transaction> GetTransactionById(long id);
-        
     }
 }

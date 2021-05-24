@@ -1,6 +1,6 @@
 @page "/Login"
-@using BlazorPresentationServer.Model
 @using BlazorPresentationServer.Services
+@using BlazorPresentationServer.Model
 
 @inject NavigationManager NavigationManager
 @inject ILoginAccountService _loginAccountService
@@ -10,22 +10,21 @@
     <h4 class="card-header">Login</h4>
     <div class="card-body">
         <EditForm Model="@validAccount" OnValidSubmit="OnValidSubmit">
-            <DataAnnotationsValidator />
+            <DataAnnotationsValidator/>
             <div class="form-group">
                 <label>Username</label>
-                <InputText @bind-Value="validAccount.Username" class="form-control" />
-                <ValidationMessage For="@(() => validAccount.Username)" />
+                <InputText @bind-Value="validAccount.Username" class="form-control"/>
+                <ValidationMessage For="@(() => validAccount.Username)"/>
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <InputText @bind-Value="validAccount.Password" class="form-control" />
-                <ValidationMessage For="@(() => validAccount.Password)" />
+                <InputText @bind-Value="validAccount.Password" class="form-control"/>
+                <ValidationMessage For="@(() => validAccount.Password)"/>
             </div>
-            
-            
-            
+
+
             <button disabled="@loading" class="btn btn-primary">
-                @if (loading) 
+                @if (loading)
                 {
                     <span class="spinner-border spinner-border-sm mr-1"></span>
                 }
@@ -33,16 +32,16 @@
             </button>
             <NavLink href="Register" class="btn btn-link">Are you new? Register here</NavLink>
             <label> @errorMessage </label>
-            
+
         </EditForm>
     </div>
 </div>
 
 
 @code {
-    private Account validAccount = new Account();
+    private readonly Account validAccount = new();
     private bool loading;
-    private String errorMessage;
+    private string errorMessage;
 
     private async Task OnValidSubmit()
     {
@@ -57,4 +56,5 @@
             errorMessage = e.Message;
         }
     }
+
 }

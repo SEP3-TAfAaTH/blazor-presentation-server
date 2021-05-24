@@ -21,32 +21,36 @@ namespace BlazorPresentationServer.Services
         public async Task CreateTransactionAsync(Transaction transaction)
         {
             var transactionJson = new StringContent(
-                JsonSerializer.Serialize(transaction, typeof(Transaction), new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json");
+                JsonSerializer.Serialize(transaction, typeof(Transaction),
+                    new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json");
 
             using var httpResponse = await client.PostAsync("/transaction", transactionJson);
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
-            }
+            if (!httpResponse.IsSuccessStatusCode) throw new Exception(httpResponse.Content.ReadAsStringAsync().Result);
         }
-        
+
 
         public async Task<List<Transaction>> GetAllTransactionsByAccountId(long id)
         {
-            Task<string> stringAsync = client.GetStringAsync($"/transaction/all/{id}");
-            string message = await stringAsync;
-            List<Transaction> transactions = JsonSerializer.Deserialize<List<Transaction>>(message, new JsonSerializerOptions
+            var stringAsync = client.GetStringAsync($"/transaction/all/{id}");
+            var message = await stringAsync;
+            var transactions = JsonSerializer.Deserialize<List<Transaction>>(message, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
             return transactions;
         }
 
+        public async Task DeleteAllTransactionsAsync(long id)
+        {
+            using var response = await client.DeleteAsync($"/transaction/{id}");
+            if (!response.IsSuccessStatusCode) throw new Exception(response.Content.ReadAsStringAsync().Result);
+        }
+
         public async Task<Transaction> GetTransactionById(long id)
         {
-            Task<string> stringAsync = client.GetStringAsync($"transaction/{id}");
-            string message = await stringAsync;
-            Transaction transaction = JsonSerializer.Deserialize<Transaction>(message, new JsonSerializerOptions
+            var stringAsync = client.GetStringAsync($"transaction/{id}");
+            var message = await stringAsync;
+            var transaction = JsonSerializer.Deserialize<Transaction>(message, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
