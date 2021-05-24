@@ -1,6 +1,6 @@
 @page "/Portfolio"
-@using BlazorPresentationServer.Model
 @using BlazorPresentationServer.Authentication
+@using BlazorPresentationServer.Model
 @using BlazorPresentationServer.Services
 @inject NavigationManager NavigationManager;
 @inject DialogService DialogService
@@ -8,12 +8,16 @@
 @inject ITransactionService TransactionService
 @inject IStockService StockService
 @inject NotificationService NotificationService
+@inject IAccountService _accountService
 
 <div class="card">
     <h4 class="card-header" style="background-color: #415A77; color: white ">Balance</h4>
-            <div class="card-body">
-                <div style="display: flex; align-content: center;"><textarea @bind="balance" disabled style="font-size: 50px; height: 80px; text-align: right; float: left;"></textarea> <p style="font-size: 50px; color: #415A77; margin-left: 20px; "> DKK</p></div>
-            </div>
+    <div class="card-body">
+        <div style="display: flex; align-content: center;">
+            <textarea @bind="balance" disabled style="font-size: 50px; height: 80px; text-align: right; float: left;"></textarea>
+            <p style="font-size: 50px; color: #415A77; margin-left: 20px; "> DKK</p>
+        </div>
+    </div>
     <h4 class="card-header">Portfolio</h4>
     <div class="card-body">
         @if (ownedStocks == null)
@@ -72,19 +76,19 @@
 
     </div>
     <h4 class="card-header">Reset portfolio</h4>
-        <div class="card-body">
-            <button class="btn btn-danger" @onclick="ResetPortfolio">I want to reset my portfolio</button>
-        </div>
+    <div class="card-body">
+        <button class="btn btn-danger" @onclick="ResetPortfolio">I want to reset my portfolio</button>
+    </div>
 </div>
 
 @code {
-    Decimal balance;
-    private IList<OwnedStock> ownedStocks = new List<OwnedStock>();
+    decimal balance;
+    private readonly IList<OwnedStock> ownedStocks = new List<OwnedStock>();
     private List<Transaction> transactions;
     private List<Transaction> newTransactions;
 
     Transaction newTransaction;
-    
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -93,14 +97,13 @@
         newTransactions = new List<Transaction>();
         transactions = await TransactionService.GetAllTransactionsByAccountId(CachedAccount.GetCachedAccount().Id);
         SortTransactions();
-        
     }
 
     private async void SortTransactions()
     {
         foreach (var t in transactions)
         {
-            bool unique = true;
+            var unique = true;
             foreach (var owned in ownedStocks)
             {
                 if (t.StockSymbol.Equals(owned.Symbol))
@@ -111,8 +114,8 @@
             }
             if (unique)
             {
-                double price = await StockService.GetStockPriceAsync(t.StockSymbol);
-                OwnedStock stock = new OwnedStock
+                var price = await StockService.GetStockPriceAsync(t.StockSymbol);
+                var stock = new OwnedStock
                 {
                     Symbol = t.StockSymbol,
                     Quantity = t.Quantity,
@@ -121,7 +124,7 @@
                     TotalCost = (double) (t.Quantity * t.Price)
                 };
                 ownedStocks.Add(stock);
-                newTransactions.Add(new Transaction{StockSymbol = stock.Symbol});
+                newTransactions.Add(new Transaction {StockSymbol = stock.Symbol});
             }
             else
             {
@@ -143,10 +146,10 @@
 
     private void NavigateToAvailableStock()
     {
-        NavigationManager.NavigateTo("AvailableStocks");    }
+        NavigationManager.NavigateTo("AvailableStocks");
+    }
 
-    
-    
+
     int orderID = 10248;
     bool orderOpened;
 
@@ -159,7 +162,6 @@
     void Open(string title, Type type, Dictionary<string, object> parameters, DialogOptions options)
     {
         Console.WriteLine("Dialog opened");
-        
     }
 
     void Close(dynamic result)
@@ -167,9 +169,9 @@
         Console.WriteLine("Dialog closed");
     }
 
-    async Task ShowInlineDialog(OwnedStock stockItem) => await DialogService.OpenAsync(stockItem.Name + " (" + stockItem.Symbol +")", ds =>
+    async Task ShowInlineDialog(OwnedStock stockItem) => await DialogService.OpenAsync(stockItem.Name + " (" + stockItem.Symbol + ")", ds =>
         @<div>
-            
+
             <div class="row">
                 <div class="col-md-12">
                     <table class="table">
@@ -183,49 +185,51 @@
                             <th>Total Price</th>
                         </tr>
                         </thead>
-                    <tbody>
-                    @foreach (var transactionItem in transactions.Where(t => t.StockSymbol.Equals(stockItem.Symbol)))
-                    {
-                        <tr>
-                            <td>@transactionItem.DateCreated</td>
-                            <td>@stockItem.Symbol</td>
-                            @if (transactionItem.IsBuy)
-                            {
-                                <td>Buy</td>
-                            }
-                            else
-                            {
-                                <td>Sell</td>
-                            }
-                            <td>@transactionItem.Quantity</td>
-                            <td>@transactionItem.Price</td>
-                            <td>@(transactionItem.Price*transactionItem.Quantity)</td>
-                        </tr>
-                    }
-                    </tbody>
+                        <tbody>
+                        @foreach (var transactionItem in transactions.Where(t => t.StockSymbol.Equals(stockItem.Symbol)))
+                        {
+                            <tr>
+                                <td>@transactionItem.DateCreated</td>
+                                <td>@stockItem.Symbol</td>
+                                @if (transactionItem.IsBuy)
+                                {
+                                    <td>Buy</td>
+                                }
+                                else
+                                {
+                                    <td>Sell</td>
+                                }
+                                <td>@transactionItem.Quantity</td>
+                                <td>@transactionItem.Price</td>
+                                <td>@(transactionItem.Price * transactionItem.Quantity)</td>
+                            </tr>
+                        }
+                        </tbody>
                     </table>
                     <RadzenButton Text="Ok" Click="() => ds.Close(true)" Style="margin-bottom: 10px; width: 150px"/>
                     <RadzenButton Text="Cancel" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Secondary" Style="margin-bottom: 10px; width: 150px"/>
-                    <RadzenButton Text="Refresh" Click="(() => { orderID = 10249; ds.Refresh(); })" ButtonStyle="ButtonStyle.Info" Style="margin-bottom: 10px; width: 150px"/>
+                    <RadzenButton Text="Refresh" Click="() => { orderID = 10249; ds.Refresh(); }" ButtonStyle="ButtonStyle.Info" Style="margin-bottom: 10px; width: 150px"/>
                 </div>
             </div>
         </div>);
-    
-    
-    async Task ShowSellPopUp(OwnedStock stockItem) => await DialogService.OpenAsync(stockItem.Name + " (" + stockItem.Symbol +")", ds =>
+
+
+    async Task ShowSellPopUp(OwnedStock stockItem) => await DialogService.OpenAsync(stockItem.Name + " (" + stockItem.Symbol + ")", ds =>
         @<div>
             <label>How many stocks do you want to sell? </label> <br>
-             <div><RadzenNumeric TValue="int" Change="((args) => OnNumberChanged(args, stockItem)) "/> </div> 
-             @* <input type="number"  @bind="newTransaction.Quantity">  *@
-            <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Sell" Click="(() => CreateTransaction(stockItem))"></RadzenButton>
+            <div>
+                <RadzenNumeric TValue="int" Change="args => OnNumberChanged(args, stockItem)"/>
+            </div>
+            @* <input type="number"  @bind="newTransaction.Quantity">  *@
+            <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Sell" Click="() => CreateTransaction(stockItem)"></RadzenButton>
         </div>);
-    
+
     private void CreateTransaction(OwnedStock stock)
     {
-        Transaction transaction = newTransactions.First(s => s.StockSymbol.Equals(stock.Symbol));
+        var transaction = newTransactions.First(s => s.StockSymbol.Equals(stock.Symbol));
         if (transaction.Quantity > stock.Quantity || transaction.Quantity < 1)
         {
-            DialogService.Confirm("Invalid quantity", "Error", new ConfirmOptions() {OkButtonText = "Ok", CancelButtonText = "Cancel"});
+            DialogService.Confirm("Invalid quantity", "Error", new ConfirmOptions {OkButtonText = "Ok", CancelButtonText = "Cancel"});
         }
         else
         {
@@ -236,36 +240,36 @@
             try
             {
                 TransactionService.CreateTransactionAsync(transaction);
-                DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great", CancelButtonText = "Cancel"});
+                DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions {OkButtonText = "Great", CancelButtonText = "Cancel"});
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 CachedAccount.GetCachedAccount().Balance -= transaction.GetTotal();
-                DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck", CancelButtonText = "Cancel"});
-
+                DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions {OkButtonText = "Fuck", CancelButtonText = "Cancel"});
             }
         }
-
     }
-    
-    
+
+
     private void OnNumberChanged(int args, OwnedStock stock)
     {
-        Transaction transaction = newTransactions.First(s => s.StockSymbol.Equals(stock.Symbol));
+        var transaction = newTransactions.First(s => s.StockSymbol.Equals(stock.Symbol));
         transaction.Quantity = args;
         Console.WriteLine(transaction.Quantity);
-
     }
-    
+
     private async Task ResetPortfolio()
     {
-        bool? result = await DialogService.Confirm("Your portfolio will be reseted", "Are you sure?", new ConfirmOptions() {OkButtonText = "Agree",CancelButtonText = "Cancel"  });
+        var result = await DialogService.Confirm("Your portfolio will reset", "Are you sure?", new ConfirmOptions {OkButtonText = "Agree", CancelButtonText = "Cancel"});
         Console.WriteLine(result.Value);
         if (result ?? true)
         {
-    //HERE COMES THE CODE
-            NotificationService.Notify (new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Reset", Detail = "Your portfolio has been reseted", Duration = 4000});
+            CachedAccount.GetCachedAccount().Balance = 10000;
+            await _accountService.EditAccountAsync(CachedAccount.GetCachedAccount());
+            await TransactionService.DeleteAllTransactionsAsync(CachedAccount.GetCachedAccount().Id);
+            NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Reset", Detail = "Your portfolio has been reset", Duration = 4000});
         }
     }
+
 }

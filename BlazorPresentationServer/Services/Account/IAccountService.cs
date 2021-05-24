@@ -9,9 +9,10 @@ namespace BlazorPresentationServer.Services
         Task AddAccountAsync(Account account);
 
         Task EditAccountAsync(Account account);
-        
+
+        Task DeleteAccountAsync(Account account);
+
         Task<List<Account>> GetAccountsAsync();
         Task<Account> GetAccountAsyncById(int id);
-        
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
 
 namespace BlazorPresentationServer.Model
 {
@@ -10,13 +9,13 @@ namespace BlazorPresentationServer.Model
         public DateTime DateTime { get; set; }
         public double Price { get; set; }
         public double Open { get; set; }
-        
+
         public double High { get; set; }
-        
+
         public double Low { get; set; }
-        
+
         public double Close { get; set; }
-        
+
         public double Percent_Change { get; set; }
 
         public override string ToString()

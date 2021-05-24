@@ -6,38 +6,38 @@ using BlazorPresentationServer.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-
 namespace BlazorPresentationServer.Services
 {
     public class StockService : IStockService
-    { 
+    {
         private const string ApiKey = "8b66c2d14f4643e7b19076c0de11b861";
         private const string ApiKey1 = "ced0265304804736b7cd16bb6c5e4332";
         private const string ApiKey2 = "f04e879f0da545829306ede67e813e27";
         private const string ApiKey3 = "fe7fb827aab34438b8ce632f7f6ccacb";
         private const string ApiKey4 = "c523a60be5c54c4f952f933136b8b73f";
         private const string ApiKey5 = "e9fc5f0530944e17b6de5bd26380eea1";
-        
-        private string Key;
 
         private readonly List<string> apikeys;
 
-        Random generator = new Random();
-        
-        
-        private HttpClient client;
+
+        private readonly HttpClient client;
+
+        private readonly Random generator = new();
+
+        private string Key;
 
         public StockService(HttpClient client)
         {
             this.client = client;
             apikeys = new List<string> {ApiKey, ApiKey1, ApiKey2, ApiKey3, ApiKey4, ApiKey5};
         }
+
         public async Task<JObject> Test()
         {
             GetAPIKey();
-            HttpResponseMessage response =
+            var response =
                 await client.GetAsync($"/quote?symbol=AAPL&interval=1day&apikey={Key}");
-            string responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
             var jobject = JObject.Parse(responseContent);
             return jobject;
         }
@@ -47,9 +47,9 @@ namespace BlazorPresentationServer.Services
             GetAPIKey();
             var response =
                 await client.GetAsync($"/quote?symbol={symbol}&interval=1day&apikey={Key}");
-            string responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
             var jobject = JObject.Parse(responseContent);
-            Stock stock = JsonConvert.DeserializeObject<Stock>(jobject.ToString());
+            var stock = JsonConvert.DeserializeObject<Stock>(jobject.ToString());
             stock.Price = await GetStockPriceAsync(symbol);
             return stock;
         }
@@ -57,24 +57,23 @@ namespace BlazorPresentationServer.Services
         public async Task<double> GetStockPriceAsync(string symbol)
         {
             GetAPIKey();
-            HttpResponseMessage response =
+            var response =
                 await client.GetAsync($"/price?symbol={symbol}&interval=1day&apikey={Key}");
-            string responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
             var jObject = JObject.Parse(responseContent);
-            Stock price = JsonConvert.DeserializeObject<Stock>(jObject.ToString());
+            var price = JsonConvert.DeserializeObject<Stock>(jObject.ToString());
             return price.Price;
         }
 
         public async Task<Stock[]> GetStockPriceListAsync(string symbol)
         {
             GetAPIKey();
-            HttpResponseMessage response =
+            var response =
                 await client.GetAsync($"/time_series?symbol={symbol}&interval=1day&apikey={Key}");
             if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"{response.StatusCode}, {response.Content.ReadAsStringAsync().Result}"); //returns exception but not custom errormessage
-            }
-            string responseContent = await response.Content.ReadAsStringAsync();
+                throw new Exception(
+                    $"{response.StatusCode}, {response.Content.ReadAsStringAsync().Result}"); //returns exception but not custom errormessage
+            var responseContent = await response.Content.ReadAsStringAsync();
             var jobject = JObject.Parse(responseContent);
             var list = JsonConvert.DeserializeObject<List<Stock>>(jobject["values"]?.ToString());
             return list.ToArray();
@@ -82,7 +81,7 @@ namespace BlazorPresentationServer.Services
 
         private void GetAPIKey()
         {
-            var num = (generator.Next(0, 1000))%6;
+            var num = generator.Next(0, 1000) % 6;
             Key = apikeys[num];
         }
     }
