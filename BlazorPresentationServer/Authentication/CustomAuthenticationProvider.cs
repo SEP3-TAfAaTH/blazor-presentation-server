@@ -14,32 +14,31 @@ namespace BlazorPresentationServer.Authentication
     {
         private readonly IJSRuntime jsRuntime;
         private readonly ILoginAccountService loginService;
-        private readonly ICachedAccount CachedAccount;
 
-        public Account cachedAccount { get; set; }
+        private Account cachedUser;
 
-        public CustomAuthenticationProvider(IJSRuntime jsRuntime, ILoginAccountService loginService, ICachedAccount cash)
+        public CustomAuthenticationProvider(IJSRuntime jsRuntime, ILoginAccountService loginService)
         {
             this.jsRuntime = jsRuntime;
             this.loginService = loginService;
-            CachedAccount = cash;
-            cachedAccount = CachedAccount.GetCachedAccount() ?? new Account();
-            
         }
         
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var identity = new ClaimsIdentity();
-            if (cachedAccount == null) {
-                string userAsJson = await jsRuntime.InvokeAsync<string>("sessionStorage.getItem", "currentAccount");
-                if (!string.IsNullOrEmpty(userAsJson)) {
+            if (cachedUser == null)
+            {
+                string userAsJson = await jsRuntime.InvokeAsync<string>("sessionStorage.getItem", "currentUser");
+                if (!string.IsNullOrEmpty(userAsJson))
+                {
                     Account tmp = JsonSerializer.Deserialize<Account>(userAsJson);
                     ValidateLoginAsync(tmp);
-                }else {
-                    identity = SetupClaimsForUser(cachedAccount);
                 }
+            }else
+            {
+                identity = SetupClaimsForUser(cachedUser);
             }
-            
+
             ClaimsPrincipal cachedClaimsPrincipal = new ClaimsPrincipal(identity);
             return await Task.FromResult(new AuthenticationState(cachedClaimsPrincipal));
         }
@@ -51,7 +50,7 @@ namespace BlazorPresentationServer.Authentication
                 identity = SetupClaimsForUser(user);
                 string serialisedData = JsonSerializer.Serialize(user);
                 jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);
-                cachedAccount = user;
+                cachedUser = user;
             } catch (Exception e) {
                 throw e;
             }
@@ -68,10 +67,9 @@ namespace BlazorPresentationServer.Authentication
         }
         
         public void Logout() {
-            cachedAccount = null;
-            CachedAccount.SetCachedAccount(null);
+            cachedUser = null;
             var user = new ClaimsPrincipal(new ClaimsIdentity());
-            jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentAccount", "");
+            jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", "");
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
         }
     }
