@@ -46,6 +46,7 @@
         {
             newAccount.Balance = 10000;
             await _accountService.AddAccountAsync(newAccount);
+            NavigationManager.NavigateTo("/Login");
         }
         catch (Exception e)
         {

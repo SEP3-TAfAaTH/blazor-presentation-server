@@ -6,6 +6,7 @@
 @inject NavigationManager NavigationManager
 @inject IAccountService _accountService
 @inject ICachedAccount CachedAccount
+@inject AuthenticationStateProvider StateProvider
 @inject NotificationService NotificationService
 @inject DialogService DialogService
 
@@ -64,6 +65,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        // changedAccount = ((CustomAuthenticationProvider) StateProvider).cachedAccount;
         changedAccount = CachedAccount.GetCachedAccount();
     }
 
@@ -72,6 +74,7 @@ else
         try
         {
             await _accountService.EditAccountAsync(changedAccount);
+            // ((CustomAuthenticationProvider) StateProvider).cachedAccount = changedAccount;
             CachedAccount.SetCachedAccount(changedAccount);
             errorMessage = "";
         }
@@ -90,6 +93,7 @@ else
         {
             try
             {
+                // await _accountService.DeleteAccountAsync(((CustomAuthenticationProvider) StateProvider).cachedAccount);
                 await _accountService.DeleteAccountAsync(CachedAccount.GetCachedAccount());
                 NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Delete", Detail = "Your account has been deleted", Duration = 4000});
                 NavigationManager.NavigateTo("/login");
@@ -99,7 +103,6 @@ else
                 Console.WriteLine(e);
                 NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Error", Detail = $"{e.Message}", Duration = 4000});
             }
-            
         }
     }
 

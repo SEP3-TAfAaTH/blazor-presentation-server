@@ -1,9 +1,11 @@
 @page "/Login"
 @using BlazorPresentationServer.Services
 @using BlazorPresentationServer.Model
+@using BlazorPresentationServer.Authentication
 
 @inject NavigationManager NavigationManager
 @inject ILoginAccountService _loginAccountService
+@inject AuthenticationStateProvider AuthenticationProvider
 
 
 <div class="card">
@@ -21,8 +23,7 @@
                 <InputText @bind-Value="validAccount.Password" class="form-control"/>
                 <ValidationMessage For="@(() => validAccount.Password)"/>
             </div>
-
-
+            
             <button disabled="@loading" class="btn btn-primary">
                 @if (loading)
                 {
@@ -31,11 +32,15 @@
                 Login
             </button>
             <NavLink href="Register" class="btn btn-link">Are you new? Register here</NavLink>
-            <label> @errorMessage </label>
-
+            <label style="color: red"> @errorMessage </label>
         </EditForm>
     </div>
 </div>
+<AuthorizeView Policy="LoggedIn">
+    <Authorized>
+        <button @onclick="Logout">Logout</button>
+    </Authorized>
+</AuthorizeView>
 
 
 @code {
@@ -47,7 +52,8 @@
     {
         try
         {
-            await _loginAccountService.LoginAccountAsync(validAccount);
+            await ((CustomAuthenticationProvider)AuthenticationProvider).ValidateLoginAsync(validAccount);
+            //await _loginAccountService.LoginAccountAsync(validAccount);
             NavigationManager.NavigateTo("/");
         }
         catch (Exception e)
@@ -55,6 +61,12 @@
             Console.WriteLine(e.Message);
             errorMessage = e.Message;
         }
+    }
+
+    private void Logout()
+    {
+        ((CustomAuthenticationProvider) AuthenticationProvider).Logout();
+        
     }
 
 }

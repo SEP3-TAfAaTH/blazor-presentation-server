@@ -1,7 +1,9 @@
 using System;
+using System.Security.Claims;
 using BlazorPresentationServer.Authentication;
 using BlazorPresentationServer.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,6 +44,13 @@ namespace BlazorPresentationServer
                 client.BaseAddress = new Uri("http://localhost:8080");
             });
             services.AddSingleton<ICachedAccount, CachedAccount>();
+            
+            services.AddScoped<AuthenticationStateProvider, CustomAuthenticationProvider>();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("LoggedIn", a => a.RequireAuthenticatedUser().RequireClaim("Login","true"));
+            });
+            
             services.AddScoped<DialogService>();
             services.AddScoped<NotificationService>();
         }
