@@ -4,14 +4,15 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BlazorPresentationServer.Authentication;
 using BlazorPresentationServer.Model;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BlazorPresentationServer.Services
 {
     public class LoginAccountService : ILoginAccountService
     {
-        private readonly HttpClient client;
-
         private readonly ICachedAccount CachedAccount;
+        //private readonly AuthenticationStateProvider CachedAccount;
+        private readonly HttpClient client;
 
         public LoginAccountService(HttpClient client, ICachedAccount cachedAccount)
         {
@@ -19,7 +20,7 @@ namespace BlazorPresentationServer.Services
             CachedAccount = cachedAccount;
         }
 
-        public async Task LoginAccountAsync(Account account)
+        public async Task<Account> LoginAccountAsync(Account account)
         {
             try
             {
@@ -35,7 +36,9 @@ namespace BlazorPresentationServer.Services
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });
+                acc.Login = "true";
                 CachedAccount.SetCachedAccount(acc);
+                return acc;
             }
             catch (Exception e)
             {

@@ -14,5 +14,7 @@ namespace BlazorPresentationServer.Model
         public string Password { get; set; }
 
         [DefaultValue(10000)] public decimal Balance { get; set; }
+        
+        public string Login { get; set; }
     }
 }

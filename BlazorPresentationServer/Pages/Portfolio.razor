@@ -5,6 +5,7 @@
 @inject NavigationManager NavigationManager;
 @inject DialogService DialogService
 @inject ICachedAccount CachedAccount
+@inject AuthenticationStateProvider StateProvider
 @inject ITransactionService TransactionService
 @inject IStockService StockService
 @inject NotificationService NotificationService
@@ -92,9 +93,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // balance = ((CustomAuthenticationProvider) StateProvider).cachedAccount.Balance;
         balance = CachedAccount.GetCachedAccount().Balance;
         transactions = new List<Transaction>();
         newTransactions = new List<Transaction>();
+        // transactions = await TransactionService.GetAllTransactionsByAccountId(((CustomAuthenticationProvider) StateProvider).cachedAccount.Id);
         transactions = await TransactionService.GetAllTransactionsByAccountId(CachedAccount.GetCachedAccount().Id);
         SortTransactions();
     }
@@ -235,6 +238,10 @@
         {
             transaction.Price = (decimal) stock.Price;
             transaction.IsBuy = false;
+            
+            // ((CustomAuthenticationProvider) StateProvider).cachedAccount.Balance += transaction.GetTotal();
+            // transaction.Account = ((CustomAuthenticationProvider) StateProvider).cachedAccount;
+
             CachedAccount.GetCachedAccount().Balance += transaction.GetTotal();
             transaction.Account = CachedAccount.GetCachedAccount();
             try
@@ -245,6 +252,7 @@
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                // ((CustomAuthenticationProvider) StateProvider).cachedAccount.Balance -= transaction.GetTotal();
                 CachedAccount.GetCachedAccount().Balance -= transaction.GetTotal();
                 DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions {OkButtonText = "Fuck", CancelButtonText = "Cancel"});
             }
@@ -268,6 +276,11 @@
             CachedAccount.GetCachedAccount().Balance = 10000;
             await _accountService.EditAccountAsync(CachedAccount.GetCachedAccount());
             await TransactionService.DeleteAllTransactionsAsync(CachedAccount.GetCachedAccount().Id);
+            
+            // ((CustomAuthenticationProvider) StateProvider).cachedAccount.Balance = 10000;
+            // await _accountService.EditAccountAsync(((CustomAuthenticationProvider) StateProvider).cachedAccount);
+            // await TransactionService.DeleteAllTransactionsAsync(((CustomAuthenticationProvider) StateProvider).cachedAccount.Id);
+            
             NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Reset", Detail = "Your portfolio has been reset", Duration = 4000});
         }
     }

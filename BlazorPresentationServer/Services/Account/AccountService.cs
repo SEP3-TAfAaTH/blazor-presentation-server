@@ -39,8 +39,8 @@ namespace BlazorPresentationServer.Services
 
         public async Task DeleteAccountAsync(Account account)
         {
-             using var response = await client.DeleteAsync($"/account/{account.Id}");
-             if (!response.IsSuccessStatusCode) throw new Exception(response.Content.ReadAsStringAsync().Result);
+            using var response = await client.DeleteAsync($"/account/{account.Id}");
+            if (!response.IsSuccessStatusCode) throw new Exception(response.Content.ReadAsStringAsync().Result);
         }
 
 
