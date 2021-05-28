@@ -6,8 +6,6 @@ namespace BlazorPresentationServer.Services
 {
     public interface IStockService
     {
-        Task<JObject> Test();
-
         Task<Stock> GetStockAsync(string symbol);
 
         Task<double> GetStockPriceAsync(string symbol);

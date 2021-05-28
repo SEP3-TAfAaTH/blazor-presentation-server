@@ -31,17 +31,7 @@ namespace BlazorPresentationServer.Services
             this.client = client;
             apikeys = new List<string> {ApiKey, ApiKey1, ApiKey2, ApiKey3, ApiKey4, ApiKey5};
         }
-
-        public async Task<JObject> Test()
-        {
-            GetAPIKey();
-            var response =
-                await client.GetAsync($"/quote?symbol=AAPL&interval=1day&apikey={Key}");
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var jobject = JObject.Parse(responseContent);
-            return jobject;
-        }
-
+        
         public async Task<Stock> GetStockAsync(string symbol)
         {
             GetAPIKey();
