@@ -7,7 +7,7 @@ namespace BlazorPresentationServer.Model
     {
         public long Id { get; set; }
         public string StockSymbol { get; set; }
-        public Account Account { get; set; } //TODO Change to ID only
+        public Account Account { get; set; }
 
         [DefaultValue(1)] public int Quantity { get; set; }
 

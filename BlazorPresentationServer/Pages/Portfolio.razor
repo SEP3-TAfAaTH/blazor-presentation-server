@@ -13,12 +13,19 @@
 
 <div class="card">
     <h4 class="card-header" style="background-color: #415A77; color: white ">Balance</h4>
-    <div class="card-body">
-        <div style="display: flex; align-content: center;">
-            <textarea @bind="balance" disabled style="font-size: 50px; height: 80px; text-align: right; float: left;"></textarea>
-            <p style="font-size: 50px; color: #415A77; margin-left: 20px; "> DKK</p>
+        <div class="card-body">
+            <div style="display: flex; align-content: center;">
+                @* <textarea @bind="balance" disabled style="font-size: 50px; height: 80px; text-align: right; float: left;">$</textarea> *@
+                <p style="font-size: 50px; color: #415A77; margin-left: 20px; ">$@balance USD</p>
+            </div>
         </div>
-    </div>
+        <h4 class="card-header" style="background-color: #415A77; color: white ">Account Value</h4>
+                <div class="card-body">
+                    <div style="display: flex; align-content: center;">
+                        @* <textarea @bind="accountValue" disabled style="font-size: 50px; height: 80px; text-align: right; float: left;">$</textarea> *@
+                        <p style="font-size: 50px; color: #415A77; margin-left: 20px; ">$@accountValue USD</p>
+                    </div>
+                </div>
     <h4 class="card-header">Portfolio</h4>
     <div class="card-body">
         @if (ownedStocks == null)
@@ -84,6 +91,7 @@
 
 @code {
     decimal balance;
+    decimal accountValue;
     private readonly IList<OwnedStock> ownedStocks = new List<OwnedStock>();
     private List<Transaction> transactions;
     private List<Transaction> newTransactions;
@@ -93,16 +101,20 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // balance = ((CustomAuthenticationProvider) StateProvider).cachedAccount.Balance;
         balance = CachedAccount.GetCachedAccount().Balance;
+        accountValue = balance;
         transactions = new List<Transaction>();
         newTransactions = new List<Transaction>();
-        // transactions = await TransactionService.GetAllTransactionsByAccountId(((CustomAuthenticationProvider) StateProvider).cachedAccount.Id);
         transactions = await TransactionService.GetAllTransactionsByAccountId(CachedAccount.GetCachedAccount().Id);
-        SortTransactions();
+        await SortTransactions();
+        
+        foreach (var o in ownedStocks)
+        {
+            accountValue += (decimal) o.GetTotalValue();
+        }
     }
 
-    private async void SortTransactions()
+    private async Task SortTransactions()
     {
         foreach (var t in transactions)
         {
