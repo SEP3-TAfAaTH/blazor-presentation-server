@@ -1,0 +1,23 @@
+.customFont {
+    font-size: 20px; 
+    color: #04AA6D;
+}
+
+.customHeader {
+    font-size: 30px; 
+    font-weight: bold; 
+    color: #3D7489;
+
+    border-bottom: 2px solid currentColor;
+    display: inline-block;
+    line-height: 0.85;
+    text-shadow:
+            2px 2px white,
+            2px -2px white,
+            -2px 2px white,
+            -2px -2px white;
+}
+
+.customFont2{
+    font-size: 20px;
+}

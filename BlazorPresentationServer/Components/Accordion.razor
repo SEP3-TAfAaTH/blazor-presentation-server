@@ -1,5 +1,147 @@
-<h3>Accordion</h3>
 
+
+@using BlazorPresentationServer.Model
+@using BlazorPresentationServer.Services
+@using BlazorPresentationServer.Authentication
+@using System.Globalization
+@inject IStockService StockService
+@inject DialogService DialogService
+@inject ICachedAccount CachedAccount
+@inject NotificationService NotificationService
+@inject ITransactionService TransactionService
+
+
+
+
+<div class="card" style="margin-bottom: 15px; margin-top: 30px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <h4 class="card-header" style="background-color: #CDCDCD ">@GnrlStock.Name</h4>
+            <div class="card-body" style="color:#3D7489; background-color: lightgray">
+                <label class="customFont2">Price: </label>  <text style="font-size: 20px">@GnrlStock.Price</text> <br>
+                @if (GnrlStock.Percent_Change > 0)
+                {
+                    <label class="customFont2">Percentage increase (every minute): </label>  <label style="font-size: 20px; color: green">@GnrlStock.Percent_Change</label> <br>
+                }
+                else
+                {
+                    <label class="customFont2">Percentage increase (every minute): </label> <label style="font-size: 20px; color: red">@GnrlStock.Percent_Change</label> <br>
+                }
+                
+                <RadzenAccordion Multiple="true">
+                    <Items>
+                        <RadzenAccordionItem Text="Buy" Style="margin-bottom: 10px; margin-top: 30px;width: 200px; color: black " class="rz-accordion-content">
+                            <label class="customHeader">@GnrlStock.Name ( @GnrlStock.Symbol )</label> <br/>
+                            <div style="margin-left: 30px;">
+                                <div>
+                                    <label class="customFont">Company name: @GnrlStock.Name</label>
+                                </div>
+                                <div>
+                                    <label class="customFont">Stock symbol: @GnrlStock.Symbol</label>
+                                </div>
+                                <div>
+                                    <label class="customFont">Quantity: </label> <RadzenNumeric Name="qnt" TValue="int" Change="@(args => OnNumberChanged(args, GnrlStockTrans))"/>
+                                </div>
+                                <div>
+                                    <label class="customFont">Current price: @GnrlStock.Price</label>
+                                </div>
+                                <div>
+                                    <label class="customFont">Total price: @(GnrlStockTrans.Quantity * GnrlStock.Price)</label>
+                                </div>
+                                <RadzenButton Style="margin-top: 20px;" ButtonStyle="ButtonStyle.Secondary" Text="Buy" Click="@(args => CreateTransaction(GnrlStockTrans, GnrlStock))"></RadzenButton>
+                            </div>
+                        </RadzenAccordionItem>
+                    </Items>
+                </RadzenAccordion>
+                <RadzenAccordion Multiple="true">
+                    <Items>
+                        <RadzenAccordionItem Text="More Details" Style="margin-bottom: 10px; margin-top: 30px; width: 200px; " class="rz-accordion-content">
+                            <label class="customHeader">Details for Orders: </label> <br/>
+                            <div style="margin-left: 30px;">
+                            <label class="customFont">High:  </label> <text style="font-size: 20px; color: #04AA6D">@GnrlStock.High</text> <br>
+                            <label class="customFont">Low:  </label> <text style="font-size: 20px; color: #04AA6D"> @GnrlStock.Low</text> <br>
+                            <label class="customFont">Close: </label> <text style="font-size: 20px; color: #04AA6D"> @GnrlStock.Close</text> <br>
+                            </div>
+                            @* <label>Average in past x period</label> <text style="font-size: 14px"> </text> <br> *@
+                            @* <label>Highest and lowest price of the year</label> <text style="font-size: 14px"></text> <br> *@
+
+                            <h1 class="customHeader">Past 30 days: </h1>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12 p-4">
+                                    <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label>
+                                    <RadzenChart>
+                                        <RadzenAreaSeries Smooth="@smooth" Data="@GnrlStockList" CategoryProperty="DateTime" Title="@GnrlStock.Name" LineType="LineType.Dashed" ValueProperty="Close">
+                                            <RadzenMarkers MarkerType="MarkerType.Square"/>
+                                        </RadzenAreaSeries>
+                                        <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}"/>
+                                        <RadzenValueAxis Formatter="@FormatAsUSD">
+                                            <RadzenGridLines Visible="true"/>
+                                            <RadzenAxisTitle Text="Close price in USD"/>
+                                        </RadzenValueAxis>
+                                    </RadzenChart>
+                                </div>
+                            </div>
+                        </RadzenAccordionItem>
+                    </Items>
+                </RadzenAccordion>
+            </div>
+
+        </div>
+        
 @code {
+    [Parameter] 
+    public Stock GnrlStock { get; set; }
+    [Parameter]
+    public Stock[] GnrlStockList { get; set; }
+    
+    public Transaction GnrlStockTrans { get; set; }
+    
+    
+    bool smooth;
+    bool orderOpened;
+    
+    
+    protected override async Task OnInitializedAsync()
+    {
+        GnrlStockTrans = new Transaction();
+    }
+    string FormatAsUSD(object value)
+    {
+        return ((double) value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
+    }
+    private void CreateTransaction(Transaction transaction, Stock stock)
+    {
+        transaction.Account = CachedAccount.GetCachedAccount();
+        transaction.Price = (decimal) stock.Price;
+        transaction.IsBuy = true;
+        transaction.StockSymbol = stock.Symbol;
+        if (transaction.Quantity < 1)
+        {
+            DialogService.Confirm("Invalid quantity", "Error", new ConfirmOptions {OkButtonText = "Ok", CancelButtonText = "Cancel"});
+        }
+        else if (transaction.GetTotal() > transaction.Account.Balance)
+        {
+            DialogService.Confirm($"Total: {transaction.GetTotal()},\n Account balance: {transaction.Account.Balance}", "Insufficient funds", new ConfirmOptions {OkButtonText = "Ok", CancelButtonText = "Cancel"});
+        }
+        else
+        {
+            try
+            {
+                CachedAccount.GetCachedAccount().Balance -= transaction.GetTotal();
+                TransactionService.CreateTransactionAsync(transaction);
 
+                NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = "Purchase is successful", Duration = 4000});
+    //DialogService.Confirm("Your purchase is successful", "Success", new ConfirmOptions() {OkButtonText = "Great",CancelButtonText = "Cancel"  });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                CachedAccount.GetCachedAccount().Balance += transaction.GetTotal();
+                NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Warning, Summary = "Failure", Detail = "Transaction failed", Duration = 4000});
+    //DialogService.Confirm("Transaction failed", "Failure", new ConfirmOptions() {OkButtonText = "Fuck",CancelButtonText = "Cancel"  });
+            }
+        }
+    }
+    private void OnNumberChanged(int args, Transaction transaction)
+    {
+        transaction.Quantity = args;
+    }
 }
