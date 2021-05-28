@@ -1,5 +1,14 @@
+using System;
+using System.Collections;
+using System.Net.Http;
+using System.Text.Json;
+using BlazorPresentationServer.Model;
 using BlazorPresentationServer.Services;
+using Bunit;
+using Newtonsoft.Json;
+using Xunit;
 using Xunit.Abstractions;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace UnitTests
 {
@@ -8,50 +17,64 @@ namespace UnitTests
         private readonly ITestOutputHelper _helper;
         private IStockService StockService;
 
-        // public UnitTest1(ITestOutputHelper helper)
-        // {
-        //     _helper = helper;
-        //     StockService = new StockService(new HttpClient
-        //     {
-        //         BaseAddress = new Uri("https://api.twelvedata.com")
-        //     });
-        // }
-        //
+        public UnitTest1(ITestOutputHelper helper)
+        {
+            
+            _helper = helper;
+            StockService = new StockService(new HttpClient
+            {
+                BaseAddress = new Uri("https://api.twelvedata.com")
+            });
+        }
+        
+        
+        
+        
+        [Fact]
+        public async void GetStockPriceTest()
+        {
+            double price = await StockService.GetStockPriceAsync("AAPL");
+            _helper.WriteLine(price.ToString());
+        }
+        
+        [Fact]
+        public async void GetStockListTest()
+        {
+            IList list = await StockService.GetStockPriceListAsync("AAPL");
+            _helper.WriteLine(list.Count.ToString());
+            foreach (var stock in list)
+            {
+                _helper.WriteLine(stock.ToString());
+            }
+        }
+
         // [Fact]
-        // public async void GetStockPriceTest()
+        // public void BuyDropDownTest()
         // {
-        //     double price = await StockService.GetStockPriceAsync("AAPL");
-        //     _helper.WriteLine(price.ToString());
+        //     using var ctx = new TestContext();
+        //     var cut = ctx.RenderComponent<Component1>(
+        //         ComponentParameterFactory.Parameter(
+        //             nameof(Component1.ParentName),
+        //             someValue));
         // }
-        //
-        // [Fact]
-        // public async void GetStockListTest()
-        // {
-        //     IList list = await StockService.GetStockPriceListAsync("AAPL");
-        //     _helper.WriteLine(list.Count.ToString());
-        //     foreach (var stock in list)
-        //     {
-        //         _helper.WriteLine(stock.ToString());
-        //     }
-        // }
-        //
-        // [Fact]
+        
+        //[Fact]
         // public async void Test1()
         // {
-        //     // var service = new StockService();
-        //     // var jObject = await service.Test();
-        //     // // foreach (var prop in jObject.Properties())
-        //     // // {
-        //     // //     _helper.WriteLine(prop.Name + ": "+prop.Value);
-        //     // // }
-        //     //
-        //     // var stock = JsonConvert.DeserializeObject<Stock>(jObject.ToString());
-        //     // _helper.WriteLine("JsonConvert: "+stock);
-        //     // // var stockb = JsonSerializer.Deserialize<Stock>(jObject.ToString(), new JsonSerializerOptions
-        //     // // {
-        //     // //     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        //     // // });
-        //     // // _helper.WriteLine(stockb.ToString());
+        //     var service = new StockService();
+        //     var jObject = await service.Test();
+        //     foreach (var prop in jObject.Properties())
+        //     {
+        //         _helper.WriteLine(prop.Name + ": "+prop.Value);
+        //     }
+        //     
+        //     var stock = JsonConvert.DeserializeObject<Stock>(jObject.ToString());
+        //     _helper.WriteLine("JsonConvert: "+stock);
+        //     var stockb = JsonSerializer.Deserialize<Stock>(jObject.ToString(), new JsonSerializerOptions
+        //     {
+        //         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        //     });
+        //     _helper.WriteLine(stockb.ToString());
         //
         // }
     }
