@@ -20,136 +20,18 @@
             Filter By Name:
             <input/>
         </label>
+        <label>
+            Enter Stock Symbol:
+            <input @bind="stockSymbol"/>
+            <button @onclick="OnSearchAsync">Search</button>
+        </label>
+        @if (visible)
+        {
+          <Accordion GnrlStock="rndmStock" GnrlStockList="randomStock"></Accordion>  
+        }
         <Accordion GnrlStock = "tslaStock" GnrlStockList="teslaStock"></Accordion>
         <Accordion GnrlStock = "msftStock" GnrlStockList="microStock"></Accordion>
-        @* <div class="card"> *@
-        @*     <h4 class="card-header" style="background-color: #CDCDCD ">Tesla Inc</h4> *@
-        @*     <div class="card-body" style="color:#3D7489; background-color: lightgray"> *@
-        @*         <label>Price: </label> <text style="font-size: 14px">@tslaStock.Price</text> <br> *@
-        @*         <label>Percentage increase (every minute): </label> <text style="font-size: 14px">@tslaStock.Percent_Change</text> <br> *@
-        @*         <RadzenAccordion Multiple="true"> *@
-        @*             <Items> *@
-        @*                 <RadzenAccordionItem Text="Buy" Style="margin-bottom: 10px; margin-top: 30px;width: 200px; color: black " class="rz-accordion-content"> *@
-        @*                     @tslaStock.Name ( @tslaStock.Symbol ) <br/> *@
-        @*                     <div> *@
-        @*                         <div> *@
-        @*                             <label>Company name: @tslaStock.Name</label> *@
-        @*                         </div> *@
-        @*                         <div> *@
-        @*                             <label>Stock symbol: @tslaStock.Symbol</label> *@
-        @*                         </div> *@
-        @*                         <div> *@
-        @*                             <label>Quantity: </label> <RadzenNumeric Name="qnt" TValue="int" Change="@(args => OnNumberChanged(args, teslaTransaction))"/> *@
-        @*                         </div> *@
-        @*                         <div> *@
-        @*                             <label>Current price: @tslaStock.Price</label> *@
-        @*                         </div> *@
-        @*                         <div> *@
-        @*                             <label>Total price: @(teslaTransaction.Quantity * tslaStock.Price)</label> *@
-        @*                         </div> *@
-        @*                         <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Buy" Click="@(args => CreateTransaction(teslaTransaction, tslaStock))"></RadzenButton> *@
-        @*                     </div> *@
-        @*                 </RadzenAccordionItem> *@
-        @*             </Items> *@
-        @*         </RadzenAccordion> *@
-        @*         <RadzenAccordion Multiple="true"> *@
-        @*             <Items> *@
-        @*                 <RadzenAccordionItem Text="More Details" Style="margin-bottom: 10px; margin-top: 30px; width: 200px; " class="rz-accordion-content"> *@
-        @*                     Details for Orders <br/> *@
-        @*                     <label>High</label> <text style="font-size: 14px">@tslaStock.High</text> <br> *@
-        @*                     <label>Low</label> <text style="font-size: 14px"> @tslaStock.Low</text> <br> *@
-        @*                     <label>Close</label> <text style="font-size: 14px"> @tslaStock.Close</text> <br> *@
-        @*                     <label>Average in past x period</label> <text style="font-size: 14px"> </text> <br> *@
-        @*                     <label>Highest and lowest price of the year</label> <text style="font-size: 14px"></text> <br> *@
-        @* *@
-        @*                     <h1>Radzen Blazor Chart with line series</h1> *@
-        @*                     <div class="row"> *@
-        @*                         <div class="col-md-6 col-sm-12 p-4"> *@
-        @*                             <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label> *@
-        @*                             <RadzenChart> *@
-        @*                                 <RadzenAreaSeries Smooth="@smooth" Data="@teslaStock" CategoryProperty="DateTime" Title="Tesla Inc" LineType="LineType.Dashed" ValueProperty="Close"> *@
-        @*                                     <RadzenMarkers MarkerType="MarkerType.Square"/> *@
-        @*                                 </RadzenAreaSeries> *@
-        @*                                 <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}"/> *@
-        @*                                 <RadzenValueAxis Formatter="@FormatAsUSD"> *@
-        @*                                     <RadzenGridLines Visible="true"/> *@
-        @*                                     <RadzenAxisTitle Text="Close price in USD"/> *@
-        @*                                 </RadzenValueAxis> *@
-        @*                             </RadzenChart> *@
-        @*                         </div> *@
-        @*                     </div> *@
-        @*                 </RadzenAccordionItem> *@
-        @*             </Items> *@
-        @*         </RadzenAccordion> *@
-        @*     </div> *@
-        @* *@
-        @* </div> *@
-        @* <div class="card" style=" margin-top: 30px; background-color: #CDCDCD "> *@
-        @*     <h4 class="card-header">Microsoft Corporation</h4> *@
-        @*     <div class="card-body" style="color:#3D7489; background-color: lightgray"> *@
-        @*         <label>Price</label> <text style="font-size: 14px">@msftStock.Price</text> <br> *@
-        @* *@
-        @*         <label>Percentage increase (every minute)</label> <text style="font-size: 14px">@msftStock.Percent_Change</text> <br> *@
-        @*         $1$ <button class="btn btn-success" style="margin-bottom: 10px" @onclick="">Buy</button> #1# *@
-        @* *@
-        @*         <RadzenAccordion Multiple="true"> *@
-        @*             <Items> *@
-        @*                 <RadzenAccordionItem Text="Buy" Style="margin-bottom: 10px; margin-top: 30px;width: 200px; " class="rz-accordion-content"> *@
-        @*                     @msftStock.Name ( @msftStock.Symbol ) <br/> *@
-        @*                     <div > *@
-        @*                         <div> *@
-        @*                             <label>Company name: @msftStock.Name</label> *@
-        @*                         </div> *@
-        @*                         <div> *@
-        @*                             <label>Stock symbol: @msftStock.Symbol</label> *@
-        @*                         </div> *@
-        @*                         <div> *@
-        @*                             <label>Quantity: </label> <RadzenNumeric TValue="int" Change="@(args => OnNumberChanged(args, microTransaction))"/> *@
-        @*                         </div> *@
-        @*                         <div> *@
-        @*                             <label>Current price: @msftStock.Price</label> *@
-        @*                         </div> *@
-        @*                         <div> *@
-        @*                             <label>Total price: @(microTransaction.Quantity * msftStock.Price)</label> *@
-        @*                         </div> *@
-        @*                         <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Buy" Click="@(args => CreateTransaction(microTransaction, msftStock))"></RadzenButton> *@
-        @*                     </div> *@
-        @*                 </RadzenAccordionItem> *@
-        @*             </Items> *@
-        @*         </RadzenAccordion> *@
-        @* *@
-        @*         <RadzenAccordion Multiple="true"> *@
-        @*             <Items> *@
-        @*                 <RadzenAccordionItem Text="More Details" Style="margin-bottom: 10px; margin-top: 30px; width: 200px; " class="rz-accordion-content"> *@
-        @*                     Details for Orders <br/> *@
-        @*                     <label>High</label> <text style="font-size: 14px">@msftStock.High</text> <br> *@
-        @* *@
-        @*                     <label>Low</label> <text style="font-size: 14px"> @msftStock.Low</text> <br> *@
-        @*                     <label>Close</label> <text style="font-size: 14px"> @msftStock.Close</text> <br> *@
-        @*                     <label>Average in past x period</label> <text style="font-size: 14px"> </text> <br> *@
-        @*                     <label>Highest and lowest price of the year</label> <text style="font-size: 14px"></text> <br> *@
-        @* *@
-        @*                     <h1>Radzen Blazor Chart with line series</h1> *@
-        @*                     <div class="row"> *@
-        @*                         <div class="col-md-6 col-sm-12 p-4"> *@
-        @*                             <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label> *@
-        @*                             <RadzenChart> *@
-        @*                                 <RadzenAreaSeries Smooth="@smooth" Data="@microStock" CategoryProperty="DateTime" Title="Microsoft Corporation" LineType="LineType.Dashed" ValueProperty="Close"> *@
-        @*                                     <RadzenMarkers MarkerType="MarkerType.Square"/> *@
-        @*                                 </RadzenAreaSeries> *@
-        @*                                 <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}"/> *@
-        @*                                 <RadzenValueAxis Formatter="@FormatAsUSD"> *@
-        @*                                     <RadzenGridLines Visible="true"/> *@
-        @*                                     <RadzenAxisTitle Text="Close price in USD"/> *@
-        @*                                 </RadzenValueAxis> *@
-        @*                             </RadzenChart> *@
-        @*                         </div> *@
-        @*                     </div> *@
-        @*                 </RadzenAccordionItem> *@
-        @*             </Items> *@
-        @*         </RadzenAccordion> *@
-        @*     </div> *@
-        @* </div> *@
+        
     </div>
 </div>
 
@@ -157,29 +39,24 @@
 @code {
     Stock tslaStock = new();
     Stock msftStock = new();
+    Stock rndmStock = new();
 
     Stock[] teslaStock = new Stock[30];
     Stock[] microStock = new Stock[30];
+    Stock[] randomStock = new Stock[30];
 
-    Transaction teslaTransaction;
-    Transaction microTransaction;
-
-    Transaction transaction;
+    string stockSymbol = "";
     decimal total;
 
     bool smooth;
     bool orderOpened;
+    bool visible;
 
     protected override async Task OnInitializedAsync()
     {
-        teslaTransaction = new Transaction();
-        microTransaction = new Transaction();
-
-        transaction = new Transaction();
-
         tslaStock = await StockService.GetStockAsync("TSLA");
         teslaStock = await StockService.GetStockPriceListAsync("TSLA");
-
+        
         msftStock = await StockService.GetStockAsync("MSFT");
         microStock = await StockService.GetStockPriceListAsync("MSFT");
     }
@@ -208,50 +85,20 @@
         Console.WriteLine("Dialog closed");
     }
 
-    string FormatAsUSD(object value)
+    public async Task OnSearchAsync()
     {
-        return ((double) value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
-    }
-
-
-    private void CreateTransaction(Transaction transaction, Stock stock)
-    {
-        transaction.Account = CachedAccount.GetCachedAccount();
-        transaction.Price = (decimal) stock.Price;
-        transaction.IsBuy = true;
-        transaction.StockSymbol = stock.Symbol;
-        if (transaction.Quantity < 1)
+        try
         {
-            DialogService.Confirm("Invalid quantity", "Error", new ConfirmOptions {OkButtonText = "Ok", CancelButtonText = "Cancel"});
+            rndmStock = await StockService.GetStockAsync(stockSymbol.ToUpper());
+            randomStock = await StockService.GetStockPriceListAsync(stockSymbol.ToUpper());
+            visible = true;
         }
-        else if (transaction.GetTotal() > transaction.Account.Balance)
+        catch (Exception e)
         {
-            DialogService.Confirm($"Total: {transaction.GetTotal()},\n Account balance: {transaction.Account.Balance}",
-                "Insufficient funds", new ConfirmOptions {OkButtonText = "Ok", CancelButtonText = "Cancel"});
+            Console.WriteLine(e);
+            NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Warning, Summary = "Error", Detail = "Invalid Stock Symbol",
+                Duration = 4000});
         }
-        else
-        {
-            try
-            {
-                CachedAccount.GetCachedAccount().Balance -= transaction.GetTotal();
-                TransactionService.CreateTransactionAsync(transaction);
-
-                NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success",
-                    Detail = "Purchase is successful", Duration = 4000});
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                CachedAccount.GetCachedAccount().Balance += transaction.GetTotal();
-                NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Warning, Summary = "Failure",
-                    Detail = "Transaction failed", Duration = 4000});
-            }
-        }
+        
     }
-
-    private void OnNumberChanged(int args, Transaction transaction)
-    {
-        transaction.Quantity = args;
-    }
-
 }
