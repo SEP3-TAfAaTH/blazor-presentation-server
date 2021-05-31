@@ -35,15 +35,16 @@ namespace BlazorPresentationServer
             {
                 client.BaseAddress = new Uri("http://localhost:8080");
             });
-            services.AddHttpClient<IStockService, StockService>(client =>
-            {
-                client.BaseAddress = new Uri("https://api.twelvedata.com");
-            });
+            // services.AddHttpClient<IStockService, StockService>(client =>
+            // {
+            //     client.BaseAddress = new Uri("https://api.twelvedata.com");
+            // });
             services.AddHttpClient<ITransactionService, TransactionService>(client =>
             {
                 client.BaseAddress = new Uri("http://localhost:8080");
             });
             services.AddSingleton<ICachedAccount, CachedAccount>();
+            services.AddSingleton<IStockService, ProxyService>();
             
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationProvider>();
             services.AddAuthorization(options =>
