@@ -26,9 +26,12 @@ namespace BlazorPresentationServer.Services
 
         private string Key;
 
-        public StockService(HttpClient client)
+        public StockService()
         {
-            this.client = client;
+            client = new HttpClient()
+            {
+                BaseAddress = new Uri("https://api.twelvedata.com")
+            };
             apikeys = new List<string> {ApiKey, ApiKey1, ApiKey2, ApiKey3, ApiKey4, ApiKey5};
         }
         
