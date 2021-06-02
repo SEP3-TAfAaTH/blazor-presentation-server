@@ -9,6 +9,7 @@
 @inject AuthenticationStateProvider StateProvider
 @inject NotificationService NotificationService
 @inject DialogService DialogService
+@inject AuthenticationStateProvider AuthenticationProvider
 
 
 @if (changedAccount == null)
@@ -97,6 +98,7 @@ else
                 await _accountService.DeleteAccountAsync(CachedAccount.GetCachedAccount());
                 NotificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Delete", Detail = "Your account has been deleted", Duration = 4000});
                 NavigationManager.NavigateTo("/login");
+                ((CustomAuthenticationProvider) AuthenticationProvider).Logout();
             }
             catch (Exception e)
             {

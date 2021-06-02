@@ -3,7 +3,6 @@
 @using BlazorPresentationServer.Authentication
 @using BlazorPresentationServer.Model
 @using BlazorPresentationServer.Components
-@using System.Globalization
 @inject IStockService StockService
 @inject DialogService DialogService
 @inject ITransactionService TransactionService
@@ -16,10 +15,6 @@
 <div class="card">
     <h4 class="card-header" style="background-color: #415A77; color: white ">Available Stocks</h4>
     <div class="card-body">
-        <label>
-            Filter By Name:
-            <input/>
-        </label>
         <label>
             Enter Stock Symbol:
             <input @bind="stockSymbol"/>

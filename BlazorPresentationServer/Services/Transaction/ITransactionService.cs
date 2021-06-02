@@ -11,6 +11,6 @@ namespace BlazorPresentationServer.Services
         Task<List<Transaction>> GetAllTransactionsByAccountId(long id);
 
         Task DeleteAllTransactionsAsync(long id);
-        Task<Transaction> GetTransactionById(long id);
+        Task<List<OwnedStock>> GetOwnedStocksByAccountIdAsync(long id);
     }
 }

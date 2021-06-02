@@ -39,22 +39,21 @@ namespace BlazorPresentationServer.Services
             });
             return transactions;
         }
-
+        public async Task<List<OwnedStock>> GetOwnedStocksByAccountIdAsync(long id)
+        {
+            var stringAsync = client.GetStringAsync($"/transaction/ownedStocks/{id}");
+            var message = await stringAsync;
+            var ownedStocks = JsonSerializer.Deserialize<List<OwnedStock>>(message, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            return ownedStocks;
+        }
+        
         public async Task DeleteAllTransactionsAsync(long id)
         {
             using var response = await client.DeleteAsync($"/transaction/{id}");
             if (!response.IsSuccessStatusCode) throw new Exception(response.Content.ReadAsStringAsync().Result);
-        }
-
-        public async Task<Transaction> GetTransactionById(long id)
-        {
-            var stringAsync = client.GetStringAsync($"transaction/{id}");
-            var message = await stringAsync;
-            var transaction = JsonSerializer.Deserialize<Transaction>(message, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-            return transaction;
         }
     }
 }
