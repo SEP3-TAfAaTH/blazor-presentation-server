@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Net.Http;
 using System.Text.Json;
+using BlazorPresentationServer.Components;
 using BlazorPresentationServer.Model;
 using BlazorPresentationServer.Services;
 using Bunit;
@@ -20,11 +21,11 @@ namespace UnitTests
         public UnitTest1(ITestOutputHelper helper)
         {
             
-            _helper = helper;
-            StockService = new StockService(new HttpClient
-            {
-                BaseAddress = new Uri("https://api.twelvedata.com")
-            });
+            // _helper = helper;
+            // StockService = new StockService(new HttpClient
+            // {
+            //     BaseAddress = new Uri("https://api.twelvedata.com")
+            // });
         }
         
         
@@ -48,6 +49,29 @@ namespace UnitTests
             }
         }
 
+
+        [Fact]
+        public async void StockComponentDisplayTest()
+        {
+            Stock testObject = new Stock()
+            {
+                Name = "Stock1",
+                Close = 100,
+                High = 200,
+                Low = 50,
+                Price = 200,
+                Percent_Change = 300,
+                Symbol = "Stck"
+
+            };
+            
+            using var ctx = new TestContext();
+            var renderedComponent = ctx.RenderComponent<StockComponent>(
+                ComponentParameterFactory.Parameter(
+                    nameof(StockComponent.GnrlStock), testObject));
+            Assert.Equal(testObject.High.ToString(), renderedComponent.Find($"#{ElementIds.HighId}").TextContent);
+        }
+        
         // [Fact]
         // public void BuyDropDownTest()
         // {
