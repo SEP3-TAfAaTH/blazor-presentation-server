@@ -12,13 +12,14 @@
             <h4 class="card-header" style="background-color: #CDCDCD ">@GnrlStock.Name</h4>
             <div class="card-body" style="color:#3D7489; background-color: lightgray">
                 <label class="customFont2">Price: </label>  <text style="font-size: 20px">@GnrlStock.Price</text> <br>
-                @if (GnrlStock.Percent_Change > 0)
+                <label class="customFont2">Date: </label> <text style="font-size: 20px">@GnrlStock.Datetime.Day/@GnrlStock.Datetime.Month/@GnrlStock.Datetime.Year</text> <br>
+                @if (GnrlStock.percent_change > 0)
                 {
-                    <label class="customFont2">Percentage increase (every minute): </label>  <label style="font-size: 20px; color: green">@GnrlStock.Percent_Change</label> <br>
+                    <label class="customFont2">Percentage increase (every minute): </label>  <label style="font-size: 20px; color: green">@GnrlStock.percent_change</label> <br>
                 }
                 else
                 {
-                    <label class="customFont2">Percentage increase (every minute): </label> <label style="font-size: 20px; color: red">@GnrlStock.Percent_Change</label> <br>
+                    <label class="customFont2">Percentage increase (every minute): </label> <label style="font-size: 20px; color: red">@GnrlStock.percent_change</label> <br>
                 }
                 
                 <RadzenAccordion Multiple="true">
@@ -51,19 +52,21 @@
                         <RadzenAccordionItem Text="More Details" Style="margin-bottom: 10px; margin-top: 30px; width: 200px; " class="rz-accordion-content">
                             <label class="customHeader">Details for Orders: </label> <br/>
                             <div style="margin-left: 30px;">
-                            <label  class="customFont">High:  </label> <text id="highId" style="font-size: 20px; color: #04AA6D">@GnrlStock.High</text> <br>
-                            <label  class="customFont">Low:  </label> <text id="lowId" style="font-size: 20px; color: #04AA6D"> @GnrlStock.Low</text> <br>
-                            <label  class="customFont">Close: </label> <text id="closeId" style="font-size: 20px; color: #04AA6D"> @GnrlStock.Close</text> <br>
+                                <label class="customFont">High: </label> <text style="font-size: 20px; color: #04AA6D">@GnrlStock.High</text> <br>
+                                <label class="customFont">Low: </label> <text style="font-size: 20px; color: #04AA6D"> @GnrlStock.Low</text> <br>
+                                <label class="customFont">Open: </label> <text style="font-size: 20px; color: #04AA6D"> @GnrlStock.Open</text> <br>
+                                <label class="customFont">Close: </label> <text style="font-size: 20px; color: #04AA6D"> @GnrlStock.Close</text> <br>
+                                <label class="customFont">Volume: </label> <text style="font-size: 20px; color: #04AA6D"> @GnrlStock.Volume</text> <br>
                             </div>
                             @* <label>Average in past x period</label> <text style="font-size: 14px"> </text> <br> *@
                             @* <label>Highest and lowest price of the year</label> <text style="font-size: 14px"></text> <br> *@
 
-                            <h1 class="customHeader">Past 30 days: </h1>
+                            <h1 class="customHeader">Past 30 Months: </h1>
                             <div class="row">
                                 <div class="col-md-6 col-sm-12 p-4">
                                     <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label>
                                     <RadzenChart>
-                                        <RadzenAreaSeries Smooth="@smooth" Data="@GnrlStockList" CategoryProperty="DateTime" Title="@GnrlStock.Name" LineType="LineType.Dashed" ValueProperty="Close">
+                                        <RadzenAreaSeries Smooth="@smooth" Data="@GnrlStockList" CategoryProperty="Datetime" Title="@GnrlStock.Name" LineType="LineType.Dashed" ValueProperty="Close">
                                             <RadzenMarkers MarkerType="MarkerType.Square"/>
                                         </RadzenAreaSeries>
                                         <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}"/>
