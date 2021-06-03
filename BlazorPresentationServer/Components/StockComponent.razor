@@ -15,11 +15,11 @@
                 <label class="customFont2">Date: </label> <text style="font-size: 20px">@GnrlStock.Datetime.Day/@GnrlStock.Datetime.Month/@GnrlStock.Datetime.Year</text> <br>
                 @if (GnrlStock.percent_change > 0)
                 {
-                    <label class="customFont2">Percentage increase (every minute): </label>  <label style="font-size: 20px; color: green">@GnrlStock.percent_change</label> <br>
+                    <label class="customFont2">Percentage increase: </label>  <label style="font-size: 20px; color: green">@GnrlStock.percent_change</label> <br>
                 }
                 else
                 {
-                    <label class="customFont2">Percentage increase (every minute): </label> <label style="font-size: 20px; color: red">@GnrlStock.percent_change</label> <br>
+                    <label class="customFont2">Percentage increase: </label> <label style="font-size: 20px; color: red">@GnrlStock.percent_change</label> <br>
                 }
                 
                 <RadzenAccordion Multiple="true">

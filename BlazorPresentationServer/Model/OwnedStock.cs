@@ -5,8 +5,6 @@ namespace BlazorPresentationServer.Model
         public string Symbol { get; set; }
         public double Price { get; set; }
         public string Name { get; set; }
-        public double PurchasePrice { get; set; }
-
         public double TotalCost { get; set; }
         public int Quantity { get; set; }
 
